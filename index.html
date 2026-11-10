@@ -136,6 +136,22 @@ textarea.in{min-height:130px;font-family:ui-monospace,Menlo,monospace;font-size:
 .price .det{color:var(--mut);font-size:14px;margin-top:6px}
 .price .det b{font-weight:600;color:var(--pos)}
 
+.chart{background:var(--surface);border-radius:16px;padding:16px 14px 12px}
+.chart-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.chart-top b{font-family:var(--num);font-size:30px;font-weight:600;font-variant-numeric:tabular-nums}
+.chart-top span{color:var(--mut);font-size:13px}
+.bars{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;align-items:end;height:120px}
+.bars div{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.bars i{display:block;width:100%;max-width:22px;border-radius:5px 5px 2px 2px;background:var(--pos);min-height:2px}
+.bars i.neg{background:var(--neg)} .bars i.zero{background:var(--line)}
+.bars i.now{background:linear-gradient(180deg,var(--acc),var(--pos))}
+.bars em{position:absolute;font-style:normal;font-size:10px;color:var(--mut);white-space:nowrap;font-variant-numeric:tabular-nums}
+.months{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;margin-top:6px}
+.months span{text-align:center;font-size:11px;color:var(--mut)}
+.months span.now{color:var(--ink);font-weight:600}
+.years{display:flex;gap:6px}
+.years button{border:0;background:var(--fill);color:var(--mut);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:500}
+.years button.on{background:var(--acc);color:var(--acc-ink)}
 .tarifa .row{cursor:default}
 .tarifa input{width:86px;text-align:right;padding:9px 12px;font-variant-numeric:tabular-nums}
 
@@ -227,6 +243,7 @@ function recalcularPersona(n) {
 function migra(p) {
   if (p.paypal == null) p.paypal = DEF_PAYPAL;
   if (p.extraPersona == null) p.extraPersona = DEF_EXTRA;
+  if (p.llegado == null) p.llegado = false;
   return p;
 }
 /* Personas de un pedido y si han pagado todo */
@@ -361,6 +378,35 @@ function render() {
   window.scrollTo(0, 0);
 }
 
+/* ---- Gráfica de beneficio por mes ---- */
+const MESES = ['E', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+function chartHTML() {
+  const years = [...new Set(S.pedidos.map(p => (p.fecha || '').slice(0, 4)).filter(Boolean))].sort();
+  const thisY = hoy().slice(0, 4);
+  if (!years.includes(thisY)) years.push(thisY);
+  const y = years.includes(ui.year) ? ui.year : thisY;
+  const meses = Array.from({ length: 12 }, () => ({ dif: 0, n: 0 }));
+  S.pedidos.filter(p => (p.fecha || '').startsWith(y)).forEach(p => {
+    const m = parseInt(p.fecha.slice(5, 7), 10) - 1; if (m < 0 || m > 11) return;
+    meses[m].dif = r2(meses[m].dif + totales(p).dif); meses[m].n++;
+  });
+  const anual = r2(meses.reduce((a, m) => a + m.dif, 0));
+  const nPed = meses.reduce((a, m) => a + m.n, 0);
+  const max = Math.max(1, ...meses.map(m => Math.abs(m.dif)));
+  const mesHoy = y === thisY ? new Date().getMonth() : -1;
+  return `<div class="h2"><h2>Beneficio</h2>${years.length > 1 ? `<div class="years">${years.map(x => `<button class="${x === y ? 'on' : ''}" data-act="verYear" data-y="${x}">${x}</button>`).join('')}</div>` : ''}</div>
+    <div class="chart">
+      <div class="chart-top"><b style="color:${anual >= 0 ? 'var(--pos)' : 'var(--neg)'}">${anual >= 0 ? '+' : ''}${eur(anual)}</b>
+        <span>en ${y}, ${nPed} pedido${nPed === 1 ? '' : 's'}</span></div>
+      <div class="bars">${meses.map((m, i) => {
+        const h = m.n ? Math.max(4, Math.round(Math.abs(m.dif) / max * 100)) : 2;
+        const cls = !m.n ? 'zero' : m.dif < 0 ? 'neg' : i === mesHoy ? 'now' : '';
+        return `<div title="${m.n} pedido${m.n === 1 ? '' : 's'}: ${eur(m.dif)}">${m.n ? `<em style="bottom:calc(${h}% + 3px)">${Math.round(m.dif)}</em>` : ''}<i class="${cls}" style="height:${h}%"></i></div>`;
+      }).join('')}</div>
+      <div class="months">${MESES.map((l, i) => `<span class="${i === mesHoy ? 'now' : ''}">${l}</span>`).join('')}</div>
+    </div>`;
+}
+
 /* ---- Lista de pedidos ---- */
 function renderPedidos() {
   header('Camisetas', { label: 'Nuevo pedido', icon: true, fn: sheetNuevoPedido });
@@ -368,12 +414,13 @@ function renderPedidos() {
   const peds = [...S.pedidos].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
   view.innerHTML = heroHTML(g, 'Lo que te queda después de pagar al proveedor')
     + (g.pendProv > 0 ? `<p class="note">Aún tienes ${eur(g.pendProv)} sin pagar al proveedor.</p>` : '')
-    + `<div class="h2"><h2>Pedidos</h2><span class="aside">${peds.length}</span></div>`
+    + chartHTML()
+    + `<div class="h2"><h2>Pedidos</h2><span class="aside">${peds.filter(p => !p.llegado).length ? peds.filter(p => !p.llegado).length + ' en camino' : peds.length}</span></div>`
     + (peds.length ? `<div class="list">${peds.map(p => {
       const t = totales(p);
       return `<div class="row" data-act="open" data-id="${p.id}">
         <div class="main"><div class="t">${esc(p.nombre)}</div>
-          <div class="s">${p.items.length} prendas${p.pagadoProveedor ? '' : ', proveedor sin pagar'}</div></div>
+          <div class="s">${p.items.length} prendas, <span style="color:${p.llegado ? 'var(--pos)' : 'var(--acc)'}">${p.llegado ? 'llegado' : 'en camino'}</span>${p.pagadoProveedor ? '' : ', proveedor sin pagar'}</div></div>
         <div class="n"><b class="${t.dif >= 0 ? 'pos' : 'neg'}">${t.dif >= 0 ? '+' : ''}${eur(t.dif)}</b>
           <small class="${t.pendiente > 0 ? 'owe' : ''}">${t.pendiente > 0 ? 'faltan ' + eur(t.pendiente) : 'todo cobrado'}</small></div>
       </div>`;
@@ -398,7 +445,10 @@ function renderPedido() {
     + `<div class="list"><div class="row" data-act="provPagado">
         <div class="main"><div class="t">Proveedor</div>
           <div class="s wrap">Prendas ${eur(r2(t.coste - num(p.tarifaProc) - num(p.paypal)))}, tarifa ${eur(num(p.tarifaProc))}, PayPal ${eur(num(p.paypal))}</div></div>
-        <span class="state ${p.pagadoProveedor ? 'ok' : ''}">${p.pagadoProveedor ? 'Pagado' : 'Sin pagar'}</span></div></div>`
+        <span class="state ${p.pagadoProveedor ? 'ok' : ''}">${p.pagadoProveedor ? 'Pagado' : 'Sin pagar'}</span></div>
+      <div class="row has-dot" data-act="llegado">
+        <span class="dot ${p.llegado ? 'on' : ''}">${ICON_CHECK}</span>
+        <div class="main"><div class="t">${p.llegado ? 'Ha llegado' : 'En camino'}</div><div class="s">${p.llegado ? 'Ya puedes repartirlo' : 'Márcalo cuando te llegue'}</div></div></div></div>`
     + `<div class="h2"><h2>Prendas</h2><span class="aside">${p.items.filter(i => i.cobrado).length} de ${p.items.length} cobradas</span></div>`
     + (p.items.length ? `<div class="list">${p.items.map(it => itemRow(it)).join('')}</div>` : `<p class="empty">Este pedido no tiene prendas. Añade la primera.</p>`)
     + `<button class="btn" data-act="addItem">Añadir prenda</button>`;
@@ -620,6 +670,8 @@ document.addEventListener('click', e => {
 const ACTIONS = {
   close: closeSheet,
   open: a => { ui.pedidoId = a.dataset.id; render(); },
+  llegado: () => { const p = pedidoActual(); p.llegado = !p.llegado; save(); const y = scrollY; render(); scrollTo(0, y); toast(p.llegado ? 'Pedido marcado como llegado' : 'Pedido en camino'); },
+  verYear: a => { ui.year = a.dataset.y; const y = scrollY; render(); scrollTo(0, y); },
   provPagado: () => { const p = pedidoActual(); p.pagadoProveedor = !p.pagadoProveedor; save(); render(); },
   addItem: () => sheetItem(nuevoItem(), true),
   editItem: a => { const { it } = findItem(a.dataset.id); if (it) sheetItem(it, false); },
