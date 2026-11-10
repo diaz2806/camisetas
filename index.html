@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1720">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Camisetas">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Camisetas</title>
+<style>
+:root{
+  --bg:#0f1720; --card:#17212c; --card2:#1e2a37; --line:#2a3846;
+  --tx:#e8eef4; --mut:#8b9aab; --acc:#22c55e; --acc2:#16a34a;
+  --warn:#f59e0b; --bad:#ef4444; --r:14px;
+  --st:env(safe-area-inset-top); --sb:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,system-ui,sans-serif}
+button,input,select{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:5;background:rgba(15,23,32,.92);backdrop-filter:blur(10px);
+  padding:calc(var(--st) + 10px) 16px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.top h1{font-size:20px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iconbtn{background:none;border:0;color:var(--acc);font-size:16px;font-weight:600;padding:6px 4px;cursor:pointer}
+main{padding:14px 14px calc(90px + var(--sb))}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:rgba(15,23,32,.96);backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);padding-bottom:var(--sb);z-index:5}
+.tabs button{flex:1;background:none;border:0;padding:10px 0 8px;color:var(--mut);font-size:12px;cursor:pointer}
+.tabs button span{display:block;font-size:20px;line-height:1.1}
+.tabs button.on{color:var(--acc)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stat{background:var(--card);border-radius:var(--r);padding:12px}
+.stat small{display:block;color:var(--mut);font-size:12px;margin-bottom:2px}
+.stat b{font-size:20px;font-variant-numeric:tabular-nums}
+.stat.pos b{color:var(--acc)} .stat.neg b{color:var(--bad)} .stat.warn b{color:var(--warn)}
+.sec{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin:18px 4px 8px}
+.list{background:var(--card);border-radius:var(--r);overflow:hidden}
+.row{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid var(--line);cursor:pointer}
+.row:last-child{border-bottom:0}
+.row .main{flex:1;min-width:0}
+.row .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .s{color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .n{text-align:right;font-variant-numeric:tabular-nums}
+.row .n b{display:block}
+.row .n small{color:var(--mut);font-size:12px}
+.chip{border:1px solid var(--line);background:var(--card2);border-radius:999px;padding:5px 10px;font-size:12px;white-space:nowrap;cursor:pointer}
+.chip.ok{background:rgba(34,197,94,.15);border-color:var(--acc2);color:var(--acc)}
+.chip.no{background:rgba(245,158,11,.12);border-color:#8a5a0a;color:var(--warn)}
+.tag{font-size:11px;padding:2px 6px;border-radius:6px;background:var(--card2);color:var(--mut);margin-left:4px}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:13px;font-weight:600;background:var(--acc);color:#06240f;cursor:pointer;margin-top:10px}
+.btn.ghost{background:var(--card2);color:var(--tx)}
+.btn.danger{background:transparent;color:var(--bad);border:1px solid #5b2323}
+.empty{color:var(--mut);text-align:center;padding:30px 10px}
+.note{color:var(--mut);font-size:13px;margin:8px 4px}
+/* sheet */
+.sheet{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;justify-content:flex-end}
+.sheet.hidden{display:none}
+.sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.sheet-body{position:relative;background:var(--bg);border-radius:18px 18px 0 0;max-height:92vh;overflow:auto;
+  padding:14px 16px calc(18px + var(--sb));border-top:1px solid var(--line)}
+.sheet-body h2{font-size:18px;margin:4px 0 12px}
+.sheet-x{position:absolute;right:12px;top:10px}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px}
+label.f{display:block;margin-bottom:10px}
+label.f>span{display:block;color:var(--mut);font-size:12px;margin:0 2px 4px}
+.in{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;outline:none}
+.in:focus{border-color:var(--acc2)}
+textarea.in{min-height:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toggles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.tog{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 12px;cursor:pointer;user-select:none}
+.tog.on{border-color:var(--acc2);background:rgba(34,197,94,.15);color:var(--acc)}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:18px;cursor:pointer}
+.pricebox{background:var(--card);border-radius:12px;padding:12px;margin:6px 0 10px}
+.pricebox .big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.pricebox .det{color:var(--mut);font-size:12px;margin-top:2px}
+.tarifa .row{cursor:default}
+.tarifa input{width:84px;text-align:right}
+.toast{position:fixed;left:50%;top:calc(var(--st) + 60px);transform:translateX(-50%);background:#e8eef4;color:#0f1720;
+  padding:9px 14px;border-radius:10px;font-size:14px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="iconbtn" id="back" hidden>‹ Atrás</button>
+  <h1 id="title">Pedidos</h1>
+  <button class="iconbtn" id="topAction"></button>
+</header>
+<main id="view"></main>
+<nav class="tabs">
+  <button data-tab="pedidos" class="on"><span>📦</span>Pedidos</button>
+  <button data-tab="personas"><span>👥</span>Personas</button>
+  <button data-tab="tarifa"><span>🏷️</span>Catálogos</button>
+</nav>
+<div id="sheet" class="sheet hidden"><div class="sheet-bg" data-act="close"></div><div class="sheet-body" id="sheetBody"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== Datos ===================== */
+const KEY = 'camisetas-v1';
+const TIPOS = {
+  camiseta: 'Camiseta fútbol',
+  chandalLargo: 'Chándal largo',
+  conjuntoCorto: 'Conjunto entreno corto',
+  chaquetaRetro: 'Chaqueta retro',
+  nba: 'Camiseta NBA',
+  otro: 'Otro (precio manual)'
+};
+const DEF_TARIFA = {
+  camiseta: 9, dorsal: 2, parche: 1, mangaLarga: 6, retro: 6, nino: 3,
+  chandalLargo: 21, conjuntoCorto: 15, chaquetaRetro: 21, nba: 15
+};
+const CATS = ['primo', 'amigos', 'familia'];
+const DEF_NOMBRES = { primo: 'Amigos del primo', amigos: 'Amigos', familia: 'Familia' };
+// Precios base por catálogo (dorsal, parches, retro, etc. son iguales en los tres)
+const BASES_CAT = {
+  primo:   { camiseta: 9,   chandalLargo: 21,   conjuntoCorto: 15, chaquetaRetro: 21, nba: 17 },
+  amigos:  { camiseta: 8,   chandalLargo: 20,   conjuntoCorto: 14, chaquetaRetro: 20, nba: 15 },
+  familia: { camiseta: 7.5, chandalLargo: 19.4, conjuntoCorto: 13, chaquetaRetro: 19, nba: 13.9 }
+};
+const tarifaCat = (c, base = DEF_TARIFA) => ({ ...base, ...BASES_CAT[c] });
+const nuevasTarifas = (base = DEF_TARIFA) => Object.fromEntries(CATS.map(c => [c, { nombre: DEF_NOMBRES[c], ...tarifaCat(c, base) }]));
+const TARIFA_LABELS = [
+  ['camiseta', 'Camiseta (base)'], ['dorsal', 'Con dorsal (+)'], ['parche', 'Cada parche (+)'],
+  ['mangaLarga', 'Manga larga (+)'], ['retro', 'Retro (+)'], ['nino', 'Talla niño (+)'],
+  ['chandalLargo', 'Chándal largo'], ['conjuntoCorto', 'Conjunto entreno corto'],
+  ['chaquetaRetro', 'Chaqueta retro'], ['nba', 'Camiseta NBA']
+];
+
+const DEF_PAYPAL = 3.99, DEF_EXTRA = 1;
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const r2 = n => Math.round(n * 100) / 100;
+const num = v => { const n = parseFloat(String(v ?? '').replace(',', '.')); return isNaN(n) ? 0 : n; };
+const eur = n => (n || 0).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const hoy = () => new Date().toISOString().slice(0, 10);
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if (s && Array.isArray(s.pedidos)) { return migraEstado(s); }
+  } catch (e) {}
+  return null;
+}
+function migraEstado(s) {
+  if (!s.tarifas) { s.tarifas = nuevasTarifas({ ...DEF_TARIFA, ...(s.tarifa || {}) }); }
+  delete s.tarifa;
+  CATS.forEach(c => { s.tarifas[c] = { nombre: DEF_NOMBRES[c], ...tarifaCat(c), ...(s.tarifas[c] || {}) }; });
+  s.personas = s.personas || {};
+  s.pedidos = (s.pedidos || []).map(migra);
+  return s;
+}
+/* Catálogo de cada persona (por defecto, amigos del primo) */
+const catDe = persona => S.personas[(persona || '').trim()] || 'primo';
+const tarifaDe = it => S.tarifas[it._cat || catDe(it.persona)];
+function recalcularPersona(n) {
+  let c = 0;
+  S.pedidos.forEach(p => p.items.forEach(it => {
+    if ((it.persona || '').trim() === n && !it.manual) { it.precio = precioTarifa(it); c++; }
+  }));
+  return c;
+}
+function migra(p) {
+  if (p.paypal == null) p.paypal = DEF_PAYPAL;
+  if (p.extraPersona == null) p.extraPersona = DEF_EXTRA;
+  return p;
+}
+/* Personas de un pedido y si han pagado todo */
+function personasPedido(p) {
+  const m = new Map();
+  p.items.forEach(i => { const n = (i.persona || '').trim(); if (!n) return;
+    if (!m.has(n)) m.set(n, true); if (!i.cobrado) m.set(n, false); });
+  return m; // nombre -> todoCobrado
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); }
+  catch (e) { toast('⚠️ No se pudo guardar'); }
+}
+
+/* Precio según tarifa */
+function precioTarifa(it, t = tarifaDe(it)) {
+  switch (it.tipo) {
+    case 'camiseta':
+      return r2(t.camiseta + (it.conDorsal ? t.dorsal : 0) + (it.parches || 0) * t.parche
+        + (it.mangaLarga ? t.mangaLarga : 0) + (it.retro ? t.retro : 0) + (it.nino ? t.nino : 0));
+    case 'chandalLargo': return t.chandalLargo;
+    case 'conjuntoCorto': return t.conjuntoCorto;
+    case 'chaquetaRetro': return t.chaquetaRetro;
+    case 'nba': return t.nba;
+    default: return 0;
+  }
+}
+function desglose(it, t = tarifaDe(it)) {
+  if (it.tipo !== 'camiseta') return TIPOS[it.tipo] || '';
+  const p = [`base ${t.camiseta}`];
+  if (it.conDorsal) p.push(`dorsal +${t.dorsal}`);
+  if (it.parches) p.push(`${it.parches} parche${it.parches > 1 ? 's' : ''} +${r2(it.parches * t.parche)}`);
+  if (it.mangaLarga) p.push(`manga larga +${t.mangaLarga}`);
+  if (it.retro) p.push(`retro +${t.retro}`);
+  if (it.nino) p.push(`niño +${t.nino}`);
+  return p.join(' · ');
+}
+function nuevoItem(d = {}) {
+  const it = {
+    id: uid(), desc: '', persona: '', talla: '', dorsal: '', tipo: 'camiseta',
+    conDorsal: false, parches: 0, mangaLarga: false, retro: false, nino: false,
+    coste: 0, manual: false, precio: 0, cobrado: false, ...d
+  };
+  it.coste = num(it.coste); it.parches = Math.max(0, parseInt(it.parches) || 0);
+  if (d.precio != null && d.manual == null) it.manual = true; // si viene precio explícito, es manual
+  if (!it.manual) it.precio = precioTarifa(it); else it.precio = num(it.precio);
+  return it;
+}
+function totales(p) {
+  const coste = r2(p.items.reduce((a, i) => a + num(i.coste), 0) + num(p.tarifaProc) + num(p.paypal));
+  const ex = num(p.extraPersona), pp = personasPedido(p);
+  const venta = r2(p.items.reduce((a, i) => a + num(i.precio), 0) + pp.size * ex);
+  const cobrado = r2(p.items.filter(i => i.cobrado).reduce((a, i) => a + num(i.precio), 0)
+    + [...pp.values()].filter(Boolean).length * ex);
+  return { coste, venta, cobrado, pendiente: r2(venta - cobrado), dif: r2(venta - coste) };
+}
+function totalesGlobal() {
+  const t = { coste: 0, venta: 0, cobrado: 0, pendiente: 0, dif: 0, pendProv: 0 };
+  S.pedidos.forEach(p => {
+    const x = totales(p);
+    for (const k in x) t[k] = r2(t[k] + x[k]);
+    if (!p.pagadoProveedor) t.pendProv = r2(t.pendProv + x.coste);
+  });
+  return t;
+}
+
+/* Pedido inicial (foto del proveedor del 10/11/2026) */
+function seed() {
+  const items = [
+    { desc: 'Conjunto negro/dorado (camiseta + pantalón)', talla: 'L', tipo: 'conjuntoCorto', coste: 12 },
+    { desc: 'Chándal Brasil', talla: 'XL', tipo: 'chandalLargo', coste: 18.4 },
+    { desc: 'Ajax', talla: 'M', dorsal: 'Promes 11', conDorsal: true, coste: 8.5 },
+    { desc: 'Valladolid', talla: 'L', coste: 6.5 },
+    { desc: 'Blazers NBA', talla: 'M', dorsal: 'Morant 1', tipo: 'nba', coste: 12.9 },
+    { desc: 'Deportivo', talla: 'M', dorsal: 'Aubameyang 7', conDorsal: true, coste: 8.5 },
+    { desc: 'Camiseta azul (escudo león)', talla: 'M', dorsal: 'Cench 23', conDorsal: true, coste: 8.5 },
+    { desc: 'Bayern', talla: 'M', coste: 6.5 },
+    { desc: 'Liverpool', talla: 'M', dorsal: 'Victor M.V. 23', conDorsal: true, coste: 8.5 },
+    { desc: 'Valladolid', talla: 'S', dorsal: 'I. Alejo 14', conDorsal: true, parches: 1, coste: 9 },
+    { desc: 'Real Madrid', talla: 'S', dorsal: 'C. Espí 19', conDorsal: true, parches: 1, coste: 9 }
+  ].map(nuevoItem);
+  return { id: uid(), nombre: 'Pedido 10 nov 2026', fecha: '2026-11-10', tarifaProc: 3, paypal: DEF_PAYPAL, extraPersona: DEF_EXTRA, pagadoProveedor: false, items };
+}
+
+let S = load();
+if (!S) { S = { tarifas: nuevasTarifas(), personas: {}, pedidos: [] }; S.pedidos.push(seed()); save(); }
+
+/* ===================== UI ===================== */
+const ui = { tab: 'pedidos', pedidoId: null };
+const $ = s => document.querySelector(s);
+const view = $('#view');
+
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 1800); }
+
+function header(title, action, back) {
+  $('#title').textContent = title;
+  const a = $('#topAction'); a.textContent = action ? action.label : ''; a.hidden = !action; a.onclick = action ? action.fn : null;
+  const b = $('#back'); b.hidden = !back; b.onclick = back || null;
+}
+
+function statsHTML(t, extra = '') {
+  return `<div class="stats">
+    <div class="stat"><small>Pagas al proveedor</small><b>${eur(t.coste)}</b></div>
+    <div class="stat"><small>Te pagan (total)</small><b>${eur(t.venta)}</b></div>
+    <div class="stat ${t.pendiente > 0 ? 'warn' : ''}"><small>Pendiente de cobrar</small><b>${eur(t.pendiente)}</b></div>
+    <div class="stat ${t.dif >= 0 ? 'pos' : 'neg'}"><small>Diferencia</small><b>${t.dif >= 0 ? '+' : ''}${eur(t.dif)}</b></div>
+    ${extra}
+  </div>`;
+}
+
+function render() {
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === ui.tab));
+  if (ui.tab === 'pedidos') ui.pedidoId ? renderPedido() : renderPedidos();
+  else if (ui.tab === 'personas') renderPersonas();
+  else renderTarifa();
+  window.scrollTo(0, 0);
+}
+
+/* ---- Lista de pedidos ---- */
+function renderPedidos() {
+  header('Pedidos', { label: '+ Nuevo', fn: sheetNuevoPedido });
+  const g = totalesGlobal();
+  const peds = [...S.pedidos].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
+  view.innerHTML = statsHTML(g, g.pendProv > 0 ? `<div class="stat warn" style="grid-column:1/-1"><small>Aún sin pagar al proveedor</small><b>${eur(g.pendProv)}</b></div>` : '')
+    + `<div class="sec">Pedidos</div>`
+    + (peds.length ? `<div class="list">${peds.map(p => {
+      const t = totales(p);
+      return `<div class="row" data-act="open" data-id="${p.id}">
+        <div class="main"><div class="t">${esc(p.nombre)}</div>
+          <div class="s">${esc(fechaBonita(p.fecha))} · ${p.items.length} prendas${p.pagadoProveedor ? '' : ' · <span style="color:var(--warn)">proveedor sin pagar</span>'}</div></div>
+        <div class="n"><b style="color:${t.dif >= 0 ? 'var(--acc)' : 'var(--bad)'}">${t.dif >= 0 ? '+' : ''}${eur(t.dif)}</b>
+          <small>${t.pendiente > 0 ? 'faltan ' + eur(t.pendiente) : 'todo cobrado'}</small></div>
+      </div>`;
+    }).join('')}</div>` : `<div class="empty">Aún no hay pedidos.</div>`);
+}
+function fechaBonita(f) {
+  if (!f) return '';
+  const d = new Date(f + 'T12:00:00');
+  return isNaN(d) ? f : d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+/* ---- Detalle de pedido ---- */
+function pedidoActual() { return S.pedidos.find(p => p.id === ui.pedidoId); }
+function renderPedido() {
+  const p = pedidoActual();
+  if (!p) { ui.pedidoId = null; return renderPedidos(); }
+  header(p.nombre, { label: 'Editar', fn: () => sheetPedido(p) }, () => { ui.pedidoId = null; render(); });
+  const t = totales(p);
+  view.innerHTML = statsHTML(t)
+    + `<div class="list"><div class="row" data-act="provPagado">
+        <div class="main"><div class="t">Pago al proveedor</div><div class="s">Prendas ${eur(r2(t.coste - num(p.tarifaProc) - num(p.paypal)))} + tarifa ${eur(num(p.tarifaProc))} + PayPal ${eur(num(p.paypal))}</div></div>
+        <span class="chip ${p.pagadoProveedor ? 'ok' : 'no'}">${p.pagadoProveedor ? '✓ Pagado' : 'Sin pagar'}</span></div></div>`
+    + (num(p.extraPersona) ? `<p class="note">Incluye ${eur(num(p.extraPersona))} por persona para la comisión de PayPal (${personasPedido(p).size} persona${personasPedido(p).size === 1 ? '' : 's'} asignada${personasPedido(p).size === 1 ? '' : 's'}).</p>` : '')
+    + `<div class="sec">Prendas (${p.items.length})</div>`
+    + (p.items.length ? `<div class="list">${p.items.map(it => itemRow(it)).join('')}</div>` : `<div class="empty">Sin prendas.</div>`)
+    + `<button class="btn" data-act="addItem">+ Añadir prenda</button>`;
+}
+function itemRow(it, extraSub = '') {
+  const sub = [it.talla, it.dorsal, it.persona || '<i>sin asignar</i>'].filter(Boolean).map(x => x.startsWith('<i>') ? x : esc(x)).join(' · ');
+  const flags = [it.retro && 'retro', it.mangaLarga && 'M/L', it.nino && 'niño', it.manual && 'manual'].filter(Boolean)
+    .map(f => `<span class="tag">${f}</span>`).join('');
+  return `<div class="row" data-act="editItem" data-id="${it.id}">
+    <div class="main"><div class="t">${esc(it.desc || TIPOS[it.tipo])}${flags}</div><div class="s">${extraSub}${sub}</div></div>
+    <div class="n"><b>${eur(it.precio)}</b><small>coste ${eur(it.coste)}</small></div>
+    <span class="chip ${it.cobrado ? 'ok' : 'no'}" data-act="toggleCobrado" data-id="${it.id}">${it.cobrado ? '✓' : '€?'}</span>
+  </div>`;
+}
+function findItem(id) {
+  for (const p of S.pedidos) { const it = p.items.find(i => i.id === id); if (it) return { p, it }; }
+  return {};
+}
+
+/* ---- Personas ---- */
+function renderPersonas() {
+  header('Personas');
+  const map = new Map();
+  S.pedidos.forEach(p => p.items.forEach(it => {
+    const k = (it.persona || '').trim() || '— Sin asignar';
+    if (!map.has(k)) map.set(k, []);
+    map.get(k).push({ p, it });
+  }));
+  // extra PayPal por persona y pedido
+  const extras = new Map();
+  S.pedidos.forEach(p => personasPedido(p).forEach((ok, n) => {
+    const e = extras.get(n) || { total: 0, pend: 0 }; const ex = num(p.extraPersona);
+    e.total = r2(e.total + ex); if (!ok) e.pend = r2(e.pend + ex); extras.set(n, e);
+  }));
+  const arr = [...map.entries()].map(([n, xs]) => {
+    const e = extras.get(n) || { total: 0, pend: 0 };
+    const total = r2(xs.reduce((a, x) => a + num(x.it.precio), 0) + e.total);
+    const pend = r2(xs.filter(x => !x.it.cobrado).reduce((a, x) => a + num(x.it.precio), 0) + e.pend);
+    return { n, xs, total, pend };
+  }).sort((a, b) => b.pend - a.pend || a.n.localeCompare(b.n));
+  if (!arr.length) { view.innerHTML = `<div class="empty">No hay prendas todavía.</div>`; return; }
+  const totalPend = r2(arr.reduce((a, x) => a + x.pend, 0));
+  view.innerHTML = `<div class="stats"><div class="stat warn" style="grid-column:1/-1"><small>Te deben en total</small><b>${eur(totalPend)}</b></div></div>`
+    + arr.map(g => `<div class="sec" style="display:flex;align-items:center;gap:8px"><span style="flex:1">${esc(g.n)} — ${g.pend > 0 ? 'debe ' + eur(g.pend) : 'al día'} <span style="text-transform:none">(total ${eur(g.total)}${extras.has(g.n) ? ', incl. PayPal' : ''})</span></span>
+      ${g.n.startsWith('—') ? '' : `<span class="chip" style="text-transform:none" data-act="cambiarCatPersona" data-n="${esc(g.n)}">${esc(S.tarifas[catDe(g.n)].nombre)} ▾</span>`}</div>
+      <div class="list">${g.xs.map(x => itemRow(x.it, `<span style="color:var(--mut)">${esc(x.p.nombre)}</span> · `)).join('')}</div>
+      ${g.pend > 0 && !g.n.startsWith('—') ? `<button class="btn ghost" data-act="cobrarPersona" data-n="${esc(g.n)}">Marcar todo de ${esc(g.n)} como cobrado</button>` : ''}`
+    ).join('');
+}
+
+/* ---- Tarifa y copias ---- */
+function renderTarifa() {
+  header('Catálogos');
+  const cat = ui.cat || 'primo', t = S.tarifas[cat];
+  const nPers = Object.values(S.personas).filter(c => c === cat).length;
+  view.innerHTML = `<div class="toggles">${CATS.map(c => `<div class="tog ${c === cat ? 'on' : ''}" data-act="verCat" data-c="${c}">${esc(S.tarifas[c].nombre)}</div>`).join('')}</div>
+    <label class="f"><span>Nombre del catálogo</span><input class="in" data-catnombre value="${esc(t.nombre)}"></label>
+    <div class="sec">Precios (€) · ${nPers} persona${nPers === 1 ? '' : 's'} en este catálogo</div>
+    <div class="list tarifa">${TARIFA_LABELS.map(([k, l]) => `<div class="row"><div class="main"><div class="t" style="font-weight:500">${l}</div></div>
+      <input class="in" inputmode="decimal" data-tarifa="${k}" value="${t[k]}"></div>`).join('')}</div>
+    <p class="note">Camiseta fútbol = base + dorsal + parches + manga larga + retro + niño. Ej.: con dorsal y 1 parche = ${eur(t.camiseta + t.dorsal + t.parche)}.
+    Cambiar precios solo afecta a prendas nuevas o editadas (o pulsa abajo para aplicarlo a todo).</p>
+    <button class="btn ghost" data-act="aplicarCat">Aplicar a las prendas ya apuntadas</button>
+    <button class="btn ghost" data-act="copiarCat">Copiar precios de otro catálogo</button>
+
+    <div class="sec">Copia de seguridad</div>
+    <p class="note">Los datos se guardan solo en este móvil. Haz una copia de vez en cuando.</p>
+    <button class="btn ghost" data-act="exportar">Exportar copia (.json)</button>
+    <button class="btn ghost" data-act="importarCopia">Restaurar copia</button>
+    <input type="file" id="fileIn" accept="application/json,.json" hidden>
+    <button class="btn danger" data-act="borrarTodo">Borrar todos los datos</button>`;
+}
+
+/* ===================== Sheets ===================== */
+function openSheet(html) { $('#sheetBody').innerHTML = `<div class="grab"></div><button class="iconbtn sheet-x" data-act="close">Cerrar</button>` + html; $('#sheet').classList.remove('hidden'); }
+function closeSheet() { $('#sheet').classList.add('hidden'); $('#sheetBody').innerHTML = ''; }
+
+function sheetNuevoPedido() {
+  openSheet(`<h2>Nuevo pedido</h2>
+    <label class="f"><span>Nombre</span><input class="in" id="pNombre" value="Pedido ${esc(fechaBonita(hoy()))}"></label>
+    <div class="grid2">
+      <label class="f"><span>Fecha</span><input class="in" type="date" id="pFecha" value="${hoy()}"></label>
+      <label class="f"><span>Tarifa procesamiento</span><input class="in" inputmode="decimal" id="pProc" value="3"></label>
+    </div>
+    <div class="grid2">
+      <label class="f"><span>Comisión PayPal (pagas)</span><input class="in" inputmode="decimal" id="pPaypal" value="${DEF_PAYPAL}"></label>
+      <label class="f"><span>Extra PayPal por persona (cobras)</span><input class="in" inputmode="decimal" id="pExtra" value="${DEF_EXTRA}"></label>
+    </div>
+    <button class="btn" data-act="crearPedido">Crear pedido vacío</button>
+    <div class="sec">o pegar el pedido que te pase Claude</div>
+    <textarea class="in" id="pJson" placeholder='{"nombre": "...", "items": [...]}'></textarea>
+    <button class="btn ghost" data-act="importarPedido">Importar pedido</button>`);
+}
+
+function sheetPedido(p) {
+  openSheet(`<h2>Editar pedido</h2>
+    <label class="f"><span>Nombre</span><input class="in" id="pNombre" value="${esc(p.nombre)}"></label>
+    <div class="grid2">
+      <label class="f"><span>Fecha</span><input class="in" type="date" id="pFecha" value="${esc(p.fecha)}"></label>
+      <label class="f"><span>Tarifa procesamiento</span><input class="in" inputmode="decimal" id="pProc" value="${num(p.tarifaProc)}"></label>
+    </div>
+    <div class="grid2">
+      <label class="f"><span>Comisión PayPal (pagas)</span><input class="in" inputmode="decimal" id="pPaypal" value="${num(p.paypal)}"></label>
+      <label class="f"><span>Extra PayPal por persona (cobras)</span><input class="in" inputmode="decimal" id="pExtra" value="${num(p.extraPersona)}"></label>
+    </div>
+    <button class="btn" data-act="guardarPedido">Guardar</button>
+    <button class="btn danger" data-act="borrarPedido">Borrar pedido</button>`);
+}
+
+let draft = null; // prenda en edición
+function sheetItem(it, isNew) {
+  draft = { ...it, _new: isNew, _cat: catDe(it.persona) };
+  const personas = [...new Set(S.pedidos.flatMap(p => p.items.map(i => (i.persona || '').trim())).filter(Boolean))].sort();
+  openSheet(`<h2>${isNew ? 'Nueva prenda' : 'Editar prenda'}</h2>
+    <label class="f"><span>Descripción</span><input class="in" data-f="desc" value="${esc(it.desc)}" placeholder="Ej.: Real Madrid 1ª"></label>
+    <label class="f"><span>Para</span><input class="in" data-f="persona" list="dlPersonas" value="${esc(it.persona)}" placeholder="Nombre"></label>
+    <div id="catSel"></div>
+    <datalist id="dlPersonas">${personas.map(n => `<option value="${esc(n)}">`).join('')}</datalist>
+    <div class="grid2">
+      <label class="f"><span>Talla</span><input class="in" data-f="talla" value="${esc(it.talla)}"></label>
+      <label class="f"><span>Dorsal / nombre</span><input class="in" data-f="dorsal" value="${esc(it.dorsal)}" placeholder="Ej.: Vini 7"></label>
+    </div>
+    <label class="f"><span>Tipo</span><select class="in" data-f="tipo">${Object.entries(TIPOS).map(([k, v]) => `<option value="${k}" ${k === it.tipo ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
+    <div id="opcCamiseta"></div>
+    <label class="f"><span>Coste proveedor (precio de la foto)</span><input class="in" inputmode="decimal" data-f="coste" value="${it.coste || ''}"></label>
+    <div id="precioBox"></div>
+    <div class="toggles"><div class="tog ${it.cobrado ? 'on' : ''}" data-tog="cobrado">✓ Ya me lo ha pagado</div></div>
+    <button class="btn" data-act="guardarItem">Guardar</button>
+    ${isNew ? '' : `<button class="btn danger" data-act="borrarItem">Borrar prenda</button>`}`);
+  paintItemDyn();
+}
+function paintItemDyn() {
+  const d = draft, t = tarifaDe(d);
+  $('#catSel').innerHTML = `<div class="toggles" style="margin-top:-2px">${CATS.map(c => `<div class="tog ${c === d._cat ? 'on' : ''}" data-act="setCat" data-c="${c}">${esc(S.tarifas[c].nombre)}</div>`).join('')}</div>`;
+  $('#opcCamiseta').innerHTML = d.tipo === 'camiseta' ? `
+    <div class="toggles">
+      <div class="tog ${d.conDorsal ? 'on' : ''}" data-tog="conDorsal">Dorsal +${t.dorsal}</div>
+      <div class="tog ${d.mangaLarga ? 'on' : ''}" data-tog="mangaLarga">Manga larga +${t.mangaLarga}</div>
+      <div class="tog ${d.retro ? 'on' : ''}" data-tog="retro">Retro +${t.retro}</div>
+      <div class="tog ${d.nino ? 'on' : ''}" data-tog="nino">Niño +${t.nino}</div>
+    </div>
+    <label class="f"><span>Parches (+${t.parche} c/u)</span><div class="stepper">
+      <button data-act="parche" data-d="-1">−</button><b>${d.parches || 0}</b><button data-act="parche" data-d="1">+</button></div></label>` : '';
+  const pt = precioTarifa(d);
+  const precio = d.manual ? num(d.precio) : pt;
+  const dif = r2(precio - num(d.coste));
+  $('#precioBox').innerHTML = `<div class="pricebox">
+      <small style="color:var(--mut)">Precio · ${esc(t.nombre)}</small>
+      <div class="big">${eur(precio)}</div>
+      <div class="det">${d.manual ? 'Precio manual (tarifa: ' + eur(pt) + ')' : esc(desglose(d))} · diferencia ${dif >= 0 ? '+' : ''}${eur(dif)}</div>
+    </div>
+    <div class="toggles">
+      <div class="tog ${d.manual ? 'on' : ''}" data-tog="manual">Precio manual</div>
+      <div class="tog" data-act="aCoste">A precio de coste</div>
+    </div>
+    ${d.manual ? `<label class="f"><span>Precio manual (€)</span><input class="in" inputmode="decimal" data-f="precio" value="${num(d.precio)}"></label>` : ''}`;
+}
+
+/* ===================== Eventos ===================== */
+document.querySelector('.tabs').addEventListener('click', e => {
+  const b = e.target.closest('button[data-tab]'); if (!b) return;
+  if (ui.tab === b.dataset.tab && b.dataset.tab === 'pedidos') ui.pedidoId = null;
+  ui.tab = b.dataset.tab; render();
+});
+
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.f && draft) {
+    const f = el.dataset.f;
+    draft[f] = el.value;
+    if (f === 'persona') {
+      const n = el.value.trim();
+      if (S.personas[n]) { draft._cat = S.personas[n]; paintItemDyn(); }
+    } else if (f === 'dorsal' && draft.tipo === 'camiseta') {
+      const had = draft.conDorsal; draft.conDorsal = el.value.trim() !== '';
+      if (had !== draft.conDorsal) paintItemDyn();
+      else paintPriceOnly();
+    } else if (f === 'tipo') paintItemDyn();
+    else if (f === 'coste' || f === 'precio') paintPriceOnly();
+  }
+  if (el.dataset.tarifa) { S.tarifas[ui.cat || 'primo'][el.dataset.tarifa] = num(el.value); save(); }
+  if (el.dataset.catnombre != null) { S.tarifas[ui.cat || 'primo'].nombre = el.value || DEF_NOMBRES[ui.cat || 'primo']; save();
+    document.querySelectorAll('[data-act=verCat]').forEach(b => { b.textContent = S.tarifas[b.dataset.c].nombre; }); }
+});
+document.addEventListener('change', e => {
+  if (e.target.dataset.f === 'tipo' && draft) { draft.tipo = e.target.value; paintItemDyn(); }
+  if (e.target.id === 'fileIn') leerCopia(e.target.files[0]);
+});
+function paintPriceOnly() {
+  // repinta solo el bloque de precio sin perder el foco del input manual
+  const focused = document.activeElement && document.activeElement.dataset.f === 'precio';
+  if (focused) {
+    const pt = precioTarifa(draft), precio = num(draft.precio), dif = r2(precio - num(draft.coste));
+    const box = $('#precioBox .pricebox');
+    box.querySelector('.big').textContent = eur(precio);
+    box.querySelector('.det').textContent = `Precio manual (tarifa: ${eur(pt)}) · diferencia ${dif >= 0 ? '+' : ''}${eur(dif)}`;
+  } else paintItemDyn();
+}
+
+document.addEventListener('click', e => {
+  const tog = e.target.closest('[data-tog]');
+  if (tog && draft) {
+    const k = tog.dataset.tog;
+    draft[k] = !draft[k];
+    if (k === 'manual' && draft.manual) draft.precio = precioTarifa(draft);
+    if (k === 'cobrado') { tog.classList.toggle('on', draft.cobrado); return; }
+    paintItemDyn(); return;
+  }
+  const a = e.target.closest('[data-act]'); if (!a) return;
+  const act = a.dataset.act;
+  if (act === 'toggleCobrado') e.stopPropagation();
+  const A = ACTIONS[act]; if (A) { e.preventDefault(); A(a); }
+});
+
+const ACTIONS = {
+  close: closeSheet,
+  open: a => { ui.pedidoId = a.dataset.id; render(); },
+  provPagado: () => { const p = pedidoActual(); p.pagadoProveedor = !p.pagadoProveedor; save(); render(); },
+  addItem: () => sheetItem(nuevoItem(), true),
+  editItem: a => { const { it } = findItem(a.dataset.id); if (it) sheetItem(it, false); },
+  toggleCobrado: a => { const { it } = findItem(a.dataset.id); if (it) { it.cobrado = !it.cobrado; save(); const y = scrollY; render(); scrollTo(0, y); } },
+  parche: a => { draft.parches = Math.max(0, (draft.parches || 0) + num(a.dataset.d)); paintItemDyn(); },
+  aCoste: () => { draft.manual = true; draft.precio = num(draft.coste); paintItemDyn(); },
+  guardarItem: () => {
+    const d = { ...draft }; const isNew = d._new, cat = d._cat; delete d._new; delete d._cat;
+    d.persona = (d.persona || '').trim();
+    let recalc = 0;
+    if (d.persona && S.personas[d.persona] !== cat) {
+      const habia = d.persona in S.personas;
+      S.personas[d.persona] = cat;
+      if (habia) recalc = recalcularPersona(d.persona);
+    }
+    d.coste = num(d.coste); d.parches = parseInt(d.parches) || 0;
+    if (d.tipo !== 'camiseta') Object.assign(d, { conDorsal: false, parches: 0, mangaLarga: false, retro: false, nino: false });
+    d.precio = d.manual ? num(d.precio) : precioTarifa(d);
+    if (isNew) pedidoActual().items.push(d);
+    else { const { p, it } = findItem(d.id); p.items[p.items.indexOf(it)] = d; }
+    save(); closeSheet(); draft = null; const y = scrollY; render(); scrollTo(0, y);
+    toast(recalc ? `${d.persona} pasa a ${S.tarifas[cat].nombre}: precios recalculados` : 'Guardado');
+  },
+  borrarItem: () => {
+    if (!confirm('¿Borrar esta prenda?')) return;
+    const { p, it } = findItem(draft.id); p.items.splice(p.items.indexOf(it), 1);
+    save(); closeSheet(); draft = null; render();
+  },
+  crearPedido: () => {
+    const p = { id: uid(), nombre: $('#pNombre').value.trim() || 'Pedido', fecha: $('#pFecha').value || hoy(), tarifaProc: num($('#pProc').value), paypal: num($('#pPaypal').value), extraPersona: num($('#pExtra').value), pagadoProveedor: false, items: [] };
+    S.pedidos.push(p); save(); closeSheet(); ui.pedidoId = p.id; render();
+  },
+  importarPedido: () => {
+    try {
+      let j = JSON.parse($('#pJson').value);
+      if (Array.isArray(j)) j = { items: j };
+      if (j.pedido) j = j.pedido;
+      if (!Array.isArray(j.items) || !j.items.length) throw new Error('sin items');
+      const p = { id: uid(), nombre: j.nombre || 'Pedido importado', fecha: j.fecha || hoy(), tarifaProc: num(j.tarifaProc ?? 0), paypal: num(j.paypal ?? DEF_PAYPAL), extraPersona: num(j.extraPersona ?? DEF_EXTRA),
+        pagadoProveedor: !!j.pagadoProveedor, items: j.items.map(i => nuevoItem({ ...i, id: uid() })) };
+      S.pedidos.push(p); save(); closeSheet(); ui.pedidoId = p.id; render(); toast(`Importadas ${p.items.length} prendas`);
+    } catch (err) { toast('⚠️ El texto no es un pedido válido'); }
+  },
+  guardarPedido: () => {
+    const p = pedidoActual();
+    p.nombre = $('#pNombre').value.trim() || p.nombre; p.fecha = $('#pFecha').value || p.fecha; p.tarifaProc = num($('#pProc').value);
+    p.paypal = num($('#pPaypal').value); p.extraPersona = num($('#pExtra').value);
+    save(); closeSheet(); render();
+  },
+  borrarPedido: () => {
+    if (!confirm('¿Borrar el pedido entero?')) return;
+    S.pedidos = S.pedidos.filter(p => p.id !== ui.pedidoId); ui.pedidoId = null; save(); closeSheet(); render();
+  },
+  cobrarPersona: a => {
+    const n = a.dataset.n;
+    if (!confirm(`¿Marcar todo lo de ${n} como cobrado?`)) return;
+    S.pedidos.forEach(p => p.items.forEach(it => { if ((it.persona || '').trim() === n) it.cobrado = true; }));
+    save(); render();
+  },
+  setCat: a => { draft._cat = a.dataset.c; if (draft.manual) {} paintItemDyn(); },
+  verCat: a => { ui.cat = a.dataset.c; render(); },
+  aplicarCat: () => {
+    const cat = ui.cat || 'primo';
+    if (!confirm(`¿Recalcular con estos precios todas las prendas de ${S.tarifas[cat].nombre}? (las de precio manual no se tocan)`)) return;
+    let c = 0;
+    S.pedidos.forEach(p => p.items.forEach(it => { if (catDe(it.persona) === cat && !it.manual) { it.precio = precioTarifa(it); c++; } }));
+    save(); toast(`${c} prendas recalculadas`);
+  },
+  copiarCat: () => {
+    const cat = ui.cat || 'primo';
+    openSheet(`<h2>Copiar precios a ${esc(S.tarifas[cat].nombre)}</h2>
+      ${CATS.filter(c => c !== cat).map(c => `<button class="btn ghost" data-act="copiarDe" data-c="${c}">Desde ${esc(S.tarifas[c].nombre)}</button>`).join('')}
+      <button class="btn ghost" data-act="copiarDe" data-c="__def">Precios por defecto de este catálogo</button>`);
+  },
+  copiarDe: a => {
+    const cat = ui.cat || 'primo', src = a.dataset.c === '__def' ? tarifaCat(cat) : S.tarifas[a.dataset.c];
+    const { nombre, ...precios } = src;
+    S.tarifas[cat] = { ...S.tarifas[cat], ...precios }; save(); closeSheet(); render(); toast('Precios copiados');
+  },
+  cambiarCatPersona: a => {
+    const n = a.dataset.n;
+    openSheet(`<h2>Catálogo de ${esc(n)}</h2>
+      ${CATS.map(c => `<button class="btn ${catDe(n) === c ? '' : 'ghost'}" data-act="fijarCatPersona" data-n="${esc(n)}" data-c="${c}">${esc(S.tarifas[c].nombre)}</button>`).join('')}
+      <p class="note">Se recalculan sus prendas (menos las de precio manual).</p>`);
+  },
+  fijarCatPersona: a => {
+    const n = a.dataset.n; S.personas[n] = a.dataset.c; const c = recalcularPersona(n);
+    save(); closeSheet(); render(); toast(`${n}: ${S.tarifas[a.dataset.c].nombre} (${c} prendas)`);
+  },
+  exportar: async () => {
+    const txt = JSON.stringify(S, null, 2);
+    const name = `camisetas-${hoy()}.json`;
+    const file = new File([txt], name, { type: 'application/json' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: name }); return; } catch (e) { if (e.name === 'AbortError') return; }
+    }
+    const url = URL.createObjectURL(file); const l = document.createElement('a'); l.href = url; l.download = name; l.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  },
+  importarCopia: () => $('#fileIn').click(),
+  borrarTodo: () => {
+    if (!confirm('Se borrarán TODOS los pedidos de este móvil. ¿Seguro?')) return;
+    S = { tarifas: nuevasTarifas(), personas: {}, pedidos: [] }; save(); ui.pedidoId = null; render();
+  }
+};
+function leerCopia(f) {
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const j = JSON.parse(r.result);
+      if (!Array.isArray(j.pedidos)) throw 0;
+      if (!confirm('Esto sustituye los datos actuales por los de la copia. ¿Seguir?')) return;
+      S = migraEstado(j); save(); ui.pedidoId = null; render(); toast('Copia restaurada');
+    } catch (e) { toast('⚠️ Archivo no válido'); }
+  };
+  r.readAsText(f);
+}
+
+render();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
