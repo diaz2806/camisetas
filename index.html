@@ -3,11 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F3F4F6" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0E1014" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Camisetas">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -17,14 +16,12 @@
 <title>Camisetas</title>
 <style>
 :root{
-  --paper:#F3F4F6; --surface:#FFFFFF; --ink:#16181D; --mut:#6B717C; --line:#E3E5EA; --fill:#EEF0F3;
-  --acc:#1D3FD1; --acc-ink:#FFFFFF; --pos:#0E8A4F; --owe:#B86E00; --neg:#C8322B;
+  --paper:#000000; --surface:#141418; --ink:#F4F4F6; --mut:#8D8D98; --line:#26262D; --fill:#1F1F26;
+  --acc:#60A5FA; --acc-ink:#000000; --pos:#34D399; --owe:#FBBF24; --neg:#F87171;
+  --c-primo:#A78BFA; --c-amigos:#60A5FA; --c-familia:#F472B6;
   --st:env(safe-area-inset-top); --sb:env(safe-area-inset-bottom);
   --num:"Barlow Condensed","Roboto Condensed","Arial Narrow",sans-serif;
-}
-@media (prefers-color-scheme: dark){
-  :root{ --paper:#0E1014; --surface:#171A20; --ink:#ECEEF2; --mut:#8E95A2; --line:#262A32; --fill:#20242B;
-    --acc:#6E8BFF; --acc-ink:#0E1014; --pos:#3CC47F; --owe:#E6A23C; --neg:#F06A62; }
+  color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--paper);color:var(--ink);
@@ -39,7 +36,7 @@ button{cursor:pointer}
   padding:calc(var(--st) + 14px) 20px 10px;display:flex;align-items:center;gap:12px}
 .top h1{font-size:22px;font-weight:650;letter-spacing:-.01em;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .link{background:none;border:0;padding:6px 0;color:var(--acc);font-size:16px;font-weight:500}
-.round{width:34px;height:34px;border-radius:50%;border:0;background:var(--ink);color:var(--paper);display:grid;place-items:center;padding:0}
+.round{width:34px;height:34px;border-radius:50%;border:0;background:var(--acc);color:var(--acc-ink);display:grid;place-items:center;padding:0}
 .round svg{width:16px;height:16px}
 
 main{padding:4px 20px calc(96px + var(--sb));max-width:620px;margin:0 auto}
@@ -50,7 +47,7 @@ main{padding:4px 20px calc(96px + var(--sb));max-width:620px;margin:0 auto}
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
 .tabs button{flex:1;max-width:140px;background:none;border:0;border-radius:12px;padding:7px 0 5px;color:var(--mut);font-size:11px;font-weight:500}
 .tabs svg{display:block;width:22px;height:22px;margin:0 auto 2px}
-.tabs button.on{color:var(--ink)}
+.tabs button.on{color:var(--acc)}
 
 /* El número grande */
 .hero{padding:10px 0 22px}
@@ -59,12 +56,12 @@ main{padding:4px 20px calc(96px + var(--sb));max-width:620px;margin:0 auto}
 .hero-n.pos{color:var(--pos)} .hero-n.neg{color:var(--neg)} .hero-n.owe{color:var(--owe)}
 .hero-l{margin:8px 0 18px;color:var(--mut);font-size:15px}
 .bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin-bottom:14px}
-.bar span{display:block;height:100%;background:var(--ink);border-radius:2px;transition:width .4s ease}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--pos));border-radius:2px;transition:width .4s ease}
 .figs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0}
 .figs div{min-width:0}
 .figs dt{color:var(--mut);font-size:13px}
 .figs dd{margin:2px 0 0;font-family:var(--num);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
-.figs dd.owe{color:var(--owe)}
+.figs dd.owe{color:var(--owe)} .figs dd.inc{color:var(--acc)}
 
 /* Listas */
 .h2{display:flex;align-items:baseline;gap:10px;margin:26px 0 8px}
@@ -88,14 +85,14 @@ main{padding:4px 20px calc(96px + var(--sb));max-width:620px;margin:0 auto}
 .flag{font-size:12px;font-weight:500;color:var(--acc);margin-left:6px}
 
 /* Círculo de cobrado */
-.dot{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);background:none;display:grid;place-items:center;padding:0;color:transparent;transition:background .15s,border-color .15s}
+.dot{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid #4A4A55;background:none;display:grid;place-items:center;padding:0;color:transparent;transition:background .15s,border-color .15s}
 .dot svg{width:14px;height:14px}
 .dot.on{background:var(--pos);border-color:var(--pos);color:#fff}
 
 .state{font-size:14px;font-weight:500;color:var(--owe)}
 .state.ok{color:var(--pos)}
 
-.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font-weight:600;background:var(--ink);color:var(--paper);margin-top:12px}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font-weight:600;background:var(--acc);color:var(--acc-ink);margin-top:12px}
 .btn.soft{background:var(--fill);color:var(--ink)}
 .btn.danger{background:none;color:var(--neg);padding:12px}
 .btn.text{background:none;color:var(--acc);padding:12px;font-weight:500}
@@ -105,8 +102,8 @@ main{padding:4px 20px calc(96px + var(--sb));max-width:620px;margin:0 auto}
 /* Hoja inferior */
 .sheet{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;justify-content:flex-end}
 .sheet.hidden{display:none}
-.sheet-bg{position:absolute;inset:0;background:rgba(10,12,16,.38);animation:fade .2s ease}
-.sheet-body{position:relative;background:var(--surface);border-radius:22px 22px 0 0;max-height:92vh;overflow:auto;
+.sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);animation:fade .2s ease}
+.sheet-body{position:relative;background:var(--surface);border-top:1px solid var(--line);border-radius:22px 22px 0 0;max-height:92vh;overflow:auto;
   padding:10px 20px calc(20px + var(--sb));animation:up .26s cubic-bezier(.2,.8,.2,1);max-width:620px;width:100%;margin:0 auto}
 .sheet-body h2{font-size:22px;font-weight:650;letter-spacing:-.01em;margin:10px 0 18px}
 .grab{width:36px;height:5px;border-radius:3px;background:var(--line);margin:0 auto}
@@ -125,10 +122,12 @@ textarea.in{min-height:130px;font-family:ui-monospace,Menlo,monospace;font-size:
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .toggles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .tog{border:0;background:var(--fill);border-radius:999px;padding:9px 14px;font-size:15px;user-select:none;cursor:pointer}
-.tog.on{background:var(--ink);color:var(--paper)}
+.tog.on{background:var(--acc);color:var(--acc-ink)}
 .seg{display:flex;background:var(--fill);border-radius:12px;padding:3px;margin-bottom:14px}
 .seg button{flex:1;border:0;background:none;border-radius:9px;padding:8px 4px;font-size:14px;line-height:1.2;font-weight:500;color:var(--mut)}
-.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.seg button.on{background:var(--cc,var(--acc));color:#000}
+.seg button[data-c=primo]{--cc:var(--c-primo)} .seg button[data-c=amigos]{--cc:var(--c-amigos)} .seg button[data-c=familia]{--cc:var(--c-familia)}
+.cat-primo{color:var(--c-primo)!important} .cat-amigos{color:var(--c-amigos)!important} .cat-familia{color:var(--c-familia)!important}
 .stepper{display:flex;align-items:center;gap:14px}
 .stepper button{width:40px;height:40px;border-radius:50%;border:0;background:var(--fill);font-size:20px;line-height:1}
 .stepper b{font-family:var(--num);font-size:24px;min-width:16px;text-align:center}
@@ -140,7 +139,7 @@ textarea.in{min-height:130px;font-family:ui-monospace,Menlo,monospace;font-size:
 .tarifa .row{cursor:default}
 .tarifa input{width:86px;text-align:right;padding:9px 12px;font-variant-numeric:tabular-nums}
 
-.toast{position:fixed;left:50%;bottom:calc(var(--sb) + 76px);transform:translate(-50%,8px);background:var(--ink);color:var(--paper);
+.toast{position:fixed;left:50%;bottom:calc(var(--sb) + 76px);transform:translate(-50%,8px);background:var(--ink);color:#000;
   padding:10px 16px;border-radius:12px;font-size:14px;font-weight:500;z-index:30;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;max-width:88vw}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
@@ -348,7 +347,7 @@ function heroHTML(t, label) {
     <div class="bar" title="Cobrado ${pct}%"><span style="width:${pct}%"></span></div>
     <dl class="figs">
       <div><dt>Pagas</dt><dd>${eur(t.coste)}</dd></div>
-      <div><dt>Cobras</dt><dd>${eur(t.venta)}</dd></div>
+      <div><dt>Cobras</dt><dd class="inc">${eur(t.venta)}</dd></div>
       <div><dt>Por cobrar</dt><dd class="${t.pendiente > 0 ? 'owe' : ''}">${eur(t.pendiente)}</dd></div>
     </dl>
   </section>`;
@@ -405,7 +404,8 @@ function renderPedido() {
     + `<button class="btn" data-act="addItem">Añadir prenda</button>`;
 }
 function itemRow(it, extraSub = '') {
-  const sub = [it.talla, it.dorsal, it.persona || 'sin asignar'].filter(Boolean).map(esc).join(', ');
+  const per = (it.persona || '').trim();
+  const sub = [it.talla, it.dorsal].filter(Boolean).map(esc).concat(per ? [`<span class="cat-${catDe(per)}">${esc(per)}</span>`] : ['sin asignar']).join(', ');
   const flags = [it.retro && 'retro', it.mangaLarga && 'manga larga', it.nino && 'niño', it.manual && 'manual'].filter(Boolean).join(', ');
   return `<div class="row has-dot" data-act="editItem" data-id="${it.id}">
     <button class="dot ${it.cobrado ? 'on' : ''}" data-act="toggleCobrado" data-id="${it.id}" aria-label="${it.cobrado ? 'Cobrada' : 'Marcar como cobrada'}">${ICON_CHECK}</button>
@@ -444,12 +444,12 @@ function renderPersonas() {
   const deudores = arr.filter(x => x.n !== SIN && x.pend > 0).length;
   view.innerHTML = `<section class="hero">
       <div class="hero-n ${totalPend > 0 ? 'owe' : 'pos'}">${bigEur(totalPend)}</div>
-      <p class="hero-l">${totalPend > 0 ? `Te deben entre ${deudores} persona${deudores === 1 ? '' : 's'}` : 'Nadie te debe nada'}</p>
+      <p class="hero-l">${totalPend > 0 ? (deudores === 1 ? 'Te debe 1 persona' : `Te deben ${deudores} personas`) : 'Nadie te debe nada'}</p>
     </section>`
     + arr.map(g => {
       const sin = g.n === SIN;
       return `<div class="h2"><h2>${sin ? 'Sin asignar' : esc(g.n)}</h2>
-        ${sin ? `<span class="aside">${g.xs.length} prendas</span>` : `<button class="link" style="font-size:14px" data-act="cambiarCatPersona" data-n="${esc(g.n)}">${esc(S.tarifas[catDe(g.n)].nombre)}</button>
+        ${sin ? `<span class="aside">${g.xs.length} prendas</span>` : `<button class="link cat-${catDe(g.n)}" style="font-size:14px" data-act="cambiarCatPersona" data-n="${esc(g.n)}">${esc(S.tarifas[catDe(g.n)].nombre)}</button>
         <span class="state ${g.pend > 0 ? '' : 'ok'}">${g.pend > 0 ? 'debe ' + eur(g.pend) : 'al día'}</span>`}</div>
       <div class="list">${g.xs.map(x => itemRow(x.it, S.pedidos.length > 1 ? esc(x.p.nombre) + ', ' : '')).join('')}</div>
       ${!sin && extras.has(g.n) ? `<p class="note">Incluye ${eur(extras.get(g.n).total)} de PayPal.</p>` : ''}
