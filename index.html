@@ -3,99 +3,159 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f1720">
+<meta name="theme-color" content="#F3F4F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1014" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Camisetas">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet">
 <title>Camisetas</title>
 <style>
 :root{
-  --bg:#0f1720; --card:#17212c; --card2:#1e2a37; --line:#2a3846;
-  --tx:#e8eef4; --mut:#8b9aab; --acc:#22c55e; --acc2:#16a34a;
-  --warn:#f59e0b; --bad:#ef4444; --r:14px;
+  --paper:#F3F4F6; --surface:#FFFFFF; --ink:#16181D; --mut:#6B717C; --line:#E3E5EA; --fill:#EEF0F3;
+  --acc:#1D3FD1; --acc-ink:#FFFFFF; --pos:#0E8A4F; --owe:#B86E00; --neg:#C8322B;
   --st:env(safe-area-inset-top); --sb:env(safe-area-inset-bottom);
+  --num:"Barlow Condensed","Roboto Condensed","Arial Narrow",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --paper:#0E1014; --surface:#171A20; --ink:#ECEEF2; --mut:#8E95A2; --line:#262A32; --fill:#20242B;
+    --acc:#6E8BFF; --acc-ink:#0E1014; --pos:#3CC47F; --owe:#E6A23C; --neg:#F06A62; }
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,system-ui,sans-serif}
-button,input,select{font:inherit;color:inherit}
-.top{position:sticky;top:0;z-index:5;background:rgba(15,23,32,.92);backdrop-filter:blur(10px);
-  padding:calc(var(--st) + 10px) 16px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
-.top h1{font-size:20px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.iconbtn{background:none;border:0;color:var(--acc);font-size:16px;font-weight:600;padding:6px 4px;cursor:pointer}
-main{padding:14px 14px calc(90px + var(--sb))}
-.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:rgba(15,23,32,.96);backdrop-filter:blur(10px);
-  border-top:1px solid var(--line);padding-bottom:var(--sb);z-index:5}
-.tabs button{flex:1;background:none;border:0;padding:10px 0 8px;color:var(--mut);font-size:12px;cursor:pointer}
-.tabs button span{display:block;font-size:20px;line-height:1.1}
-.tabs button.on{color:var(--acc)}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.stat{background:var(--card);border-radius:var(--r);padding:12px}
-.stat small{display:block;color:var(--mut);font-size:12px;margin-bottom:2px}
-.stat b{font-size:20px;font-variant-numeric:tabular-nums}
-.stat.pos b{color:var(--acc)} .stat.neg b{color:var(--bad)} .stat.warn b{color:var(--warn)}
-.sec{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin:18px 4px 8px}
-.list{background:var(--card);border-radius:var(--r);overflow:hidden}
-.row{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid var(--line);cursor:pointer}
-.row:last-child{border-bottom:0}
+html,body{margin:0;background:var(--paper);color:var(--ink);
+  font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* Cabecera */
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);
+  padding:calc(var(--st) + 14px) 20px 10px;display:flex;align-items:center;gap:12px}
+.top h1{font-size:22px;font-weight:650;letter-spacing:-.01em;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link{background:none;border:0;padding:6px 0;color:var(--acc);font-size:16px;font-weight:500}
+.round{width:34px;height:34px;border-radius:50%;border:0;background:var(--ink);color:var(--paper);display:grid;place-items:center;padding:0}
+.round svg{width:16px;height:16px}
+
+main{padding:4px 20px calc(96px + var(--sb));max-width:620px;margin:0 auto}
+
+/* Barra inferior */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;justify-content:center;gap:6px;
+  padding:8px 12px calc(8px + var(--sb));background:color-mix(in srgb,var(--paper) 90%,transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+.tabs button{flex:1;max-width:140px;background:none;border:0;border-radius:12px;padding:7px 0 5px;color:var(--mut);font-size:11px;font-weight:500}
+.tabs svg{display:block;width:22px;height:22px;margin:0 auto 2px}
+.tabs button.on{color:var(--ink)}
+
+/* El número grande */
+.hero{padding:10px 0 22px}
+.hero-n{font-family:var(--num);font-weight:600;font-size:76px;line-height:.9;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.hero-n small{font-size:.42em;font-weight:500;margin-left:2px;letter-spacing:0}
+.hero-n.pos{color:var(--pos)} .hero-n.neg{color:var(--neg)} .hero-n.owe{color:var(--owe)}
+.hero-l{margin:8px 0 18px;color:var(--mut);font-size:15px}
+.bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin-bottom:14px}
+.bar span{display:block;height:100%;background:var(--ink);border-radius:2px;transition:width .4s ease}
+.figs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0}
+.figs div{min-width:0}
+.figs dt{color:var(--mut);font-size:13px}
+.figs dd{margin:2px 0 0;font-family:var(--num);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.figs dd.owe{color:var(--owe)}
+
+/* Listas */
+.h2{display:flex;align-items:baseline;gap:10px;margin:26px 0 8px}
+.h2 h2{font-size:17px;font-weight:650;margin:0;flex:1}
+.h2 .aside{color:var(--mut);font-size:14px}
+.list{background:var(--surface);border-radius:16px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:13px 16px;position:relative;cursor:pointer;width:100%;background:none;border:0;text-align:left}
+.row+.row::before{content:"";position:absolute;top:0;left:16px;right:0;height:1px;background:var(--line)}
+.row.has-dot+.row::before,.row.has-dot::before{left:56px}
 .row .main{flex:1;min-width:0}
-.row .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .s{color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .n{text-align:right;font-variant-numeric:tabular-nums}
-.row .n b{display:block}
-.row .n small{color:var(--mut);font-size:12px}
-.chip{border:1px solid var(--line);background:var(--card2);border-radius:999px;padding:5px 10px;font-size:12px;white-space:nowrap;cursor:pointer}
-.chip.ok{background:rgba(34,197,94,.15);border-color:var(--acc2);color:var(--acc)}
-.chip.no{background:rgba(245,158,11,.12);border-color:#8a5a0a;color:var(--warn)}
-.tag{font-size:11px;padding:2px 6px;border-radius:6px;background:var(--card2);color:var(--mut);margin-left:4px}
-.btn{display:block;width:100%;border:0;border-radius:12px;padding:13px;font-weight:600;background:var(--acc);color:#06240f;cursor:pointer;margin-top:10px}
-.btn.ghost{background:var(--card2);color:var(--tx)}
-.btn.danger{background:transparent;color:var(--bad);border:1px solid #5b2323}
-.empty{color:var(--mut);text-align:center;padding:30px 10px}
-.note{color:var(--mut);font-size:13px;margin:8px 4px}
-/* sheet */
+.row .t{font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .s{color:var(--mut);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.row .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row .n b{display:block;font-weight:600}
+.row .n small{color:var(--mut);font-size:13px}
+.row .n b.pos{color:var(--pos)} .row .n b.neg{color:var(--neg)}
+.row .n small.owe{color:var(--owe)}
+.row .s.wrap{white-space:normal}
+.page{font-size:30px;font-weight:700;letter-spacing:-.02em;margin:2px 0 2px;line-height:1.1}
+.page+.sub{color:var(--mut);margin:0 0 4px}
+.flag{font-size:12px;font-weight:500;color:var(--acc);margin-left:6px}
+
+/* Círculo de cobrado */
+.dot{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);background:none;display:grid;place-items:center;padding:0;color:transparent;transition:background .15s,border-color .15s}
+.dot svg{width:14px;height:14px}
+.dot.on{background:var(--pos);border-color:var(--pos);color:#fff}
+
+.state{font-size:14px;font-weight:500;color:var(--owe)}
+.state.ok{color:var(--pos)}
+
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font-weight:600;background:var(--ink);color:var(--paper);margin-top:12px}
+.btn.soft{background:var(--fill);color:var(--ink)}
+.btn.danger{background:none;color:var(--neg);padding:12px}
+.btn.text{background:none;color:var(--acc);padding:12px;font-weight:500}
+.empty{color:var(--mut);padding:36px 4px;font-size:15px}
+.note{color:var(--mut);font-size:14px;margin:10px 2px}
+
+/* Hoja inferior */
 .sheet{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;justify-content:flex-end}
 .sheet.hidden{display:none}
-.sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.55)}
-.sheet-body{position:relative;background:var(--bg);border-radius:18px 18px 0 0;max-height:92vh;overflow:auto;
-  padding:14px 16px calc(18px + var(--sb));border-top:1px solid var(--line)}
-.sheet-body h2{font-size:18px;margin:4px 0 12px}
-.sheet-x{position:absolute;right:12px;top:10px}
-.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px}
-label.f{display:block;margin-bottom:10px}
-label.f>span{display:block;color:var(--mut);font-size:12px;margin:0 2px 4px}
-.in{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;outline:none}
-.in:focus{border-color:var(--acc2)}
-textarea.in{min-height:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.toggles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.tog{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 12px;cursor:pointer;user-select:none}
-.tog.on{border-color:var(--acc2);background:rgba(34,197,94,.15);color:var(--acc)}
-.stepper{display:flex;align-items:center;gap:10px}
-.stepper button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:18px;cursor:pointer}
-.pricebox{background:var(--card);border-radius:12px;padding:12px;margin:6px 0 10px}
-.pricebox .big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
-.pricebox .det{color:var(--mut);font-size:12px;margin-top:2px}
+.sheet-bg{position:absolute;inset:0;background:rgba(10,12,16,.38);animation:fade .2s ease}
+.sheet-body{position:relative;background:var(--surface);border-radius:22px 22px 0 0;max-height:92vh;overflow:auto;
+  padding:10px 20px calc(20px + var(--sb));animation:up .26s cubic-bezier(.2,.8,.2,1);max-width:620px;width:100%;margin:0 auto}
+.sheet-body h2{font-size:22px;font-weight:650;letter-spacing:-.01em;margin:10px 0 18px}
+.grab{width:36px;height:5px;border-radius:3px;background:var(--line);margin:0 auto}
+.sheet-x{position:absolute;right:16px;top:16px}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+label.f{display:block;margin-bottom:14px}
+label.f>span{display:block;color:var(--mut);font-size:13px;margin:0 2px 6px}
+.in{width:100%;background:var(--fill);border:1.5px solid transparent;border-radius:12px;padding:12px 14px;outline:none;-webkit-appearance:none;appearance:none}
+.in:focus{border-color:var(--acc);background:var(--surface)}
+select.in{background-image:linear-gradient(45deg,transparent 50%,var(--mut) 50%),linear-gradient(135deg,var(--mut) 50%,transparent 50%);
+  background-position:calc(100% - 20px) 50%,calc(100% - 15px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+textarea.in{min-height:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toggles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tog{border:0;background:var(--fill);border-radius:999px;padding:9px 14px;font-size:15px;user-select:none;cursor:pointer}
+.tog.on{background:var(--ink);color:var(--paper)}
+.seg{display:flex;background:var(--fill);border-radius:12px;padding:3px;margin-bottom:14px}
+.seg button{flex:1;border:0;background:none;border-radius:9px;padding:8px 4px;font-size:14px;line-height:1.2;font-weight:500;color:var(--mut)}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:40px;height:40px;border-radius:50%;border:0;background:var(--fill);font-size:20px;line-height:1}
+.stepper b{font-family:var(--num);font-size:24px;min-width:16px;text-align:center}
+.price{padding:4px 0 14px}
+.price .big{font-family:var(--num);font-size:48px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.price .det{color:var(--mut);font-size:14px;margin-top:6px}
+.price .det b{font-weight:600;color:var(--pos)}
+
 .tarifa .row{cursor:default}
-.tarifa input{width:84px;text-align:right}
-.toast{position:fixed;left:50%;top:calc(var(--st) + 60px);transform:translateX(-50%);background:#e8eef4;color:#0f1720;
-  padding:9px 14px;border-radius:10px;font-size:14px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none}
-.toast.show{opacity:1}
+.tarifa input{width:86px;text-align:right;padding:9px 12px;font-variant-numeric:tabular-nums}
+
+.toast{position:fixed;left:50%;bottom:calc(var(--sb) + 76px);transform:translate(-50%,8px);background:var(--ink);color:var(--paper);
+  padding:10px 16px;border-radius:12px;font-size:14px;font-weight:500;z-index:30;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;max-width:88vw}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
 <header class="top">
-  <button class="iconbtn" id="back" hidden>‹ Atrás</button>
-  <h1 id="title">Pedidos</h1>
-  <button class="iconbtn" id="topAction"></button>
+  <button class="link" id="back" hidden>Atrás</button>
+  <h1 id="title">Camisetas</h1>
+  <button class="link" id="topAction" hidden></button>
 </header>
 <main id="view"></main>
 <nav class="tabs">
-  <button data-tab="pedidos" class="on"><span>📦</span>Pedidos</button>
-  <button data-tab="personas"><span>👥</span>Personas</button>
-  <button data-tab="tarifa"><span>🏷️</span>Catálogos</button>
+  <button data-tab="pedidos" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M8 3 4 5.5 2.5 10l3 1.2V21h13V11.2l3-1.2L20 5.5 16 3c-.6 1.8-2.2 3-4 3S8.6 4.8 8 3Z"/></svg>Pedidos</button>
+  <button data-tab="personas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.9.8 3.1 2.5 3.5 5.2"/></svg>Personas</button>
+  <button data-tab="tarifa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 12.5V4a1 1 0 0 1 1-1h8.5L21 11.5 12.5 20 3 12.5Z"/><circle cx="8" cy="8" r="1.4"/></svg>Catálogos</button>
 </nav>
 <div id="sheet" class="sheet hidden"><div class="sheet-bg" data-act="close"></div><div class="sheet-body" id="sheetBody"></div></div>
 <div class="toast" id="toast"></div>
@@ -264,18 +324,34 @@ function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('s
 
 function header(title, action, back) {
   $('#title').textContent = title;
-  const a = $('#topAction'); a.textContent = action ? action.label : ''; a.hidden = !action; a.onclick = action ? action.fn : null;
+  const a = $('#topAction');
+  a.hidden = !action; a.onclick = action ? action.fn : null;
+  if (action) { a.innerHTML = action.icon ? ICON_PLUS : esc(action.label); a.className = action.icon ? 'round' : 'link'; a.setAttribute('aria-label', action.label); }
   const b = $('#back'); b.hidden = !back; b.onclick = back || null;
+  b.innerHTML = '‹ ' + esc(back && back.label ? back.label : 'Atrás');
 }
+const ICON_PLUS = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2.5v11M2.5 8h11"/></svg>';
+const ICON_CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg>';
 
-function statsHTML(t, extra = '') {
-  return `<div class="stats">
-    <div class="stat"><small>Pagas al proveedor</small><b>${eur(t.coste)}</b></div>
-    <div class="stat"><small>Te pagan (total)</small><b>${eur(t.venta)}</b></div>
-    <div class="stat ${t.pendiente > 0 ? 'warn' : ''}"><small>Pendiente de cobrar</small><b>${eur(t.pendiente)}</b></div>
-    <div class="stat ${t.dif >= 0 ? 'pos' : 'neg'}"><small>Diferencia</small><b>${t.dif >= 0 ? '+' : ''}${eur(t.dif)}</b></div>
-    ${extra}
-  </div>`;
+/* Número grande con céntimos pequeños */
+function bigEur(n, sign) {
+  const neg = n < 0, a = Math.abs(n);
+  const [e, c] = a.toFixed(2).split('.');
+  const ent = Number(e).toLocaleString('es-ES');
+  return `${sign ? (neg ? '−' : '+') : (neg ? '−' : '')}${ent}<small>,${c} €</small>`;
+}
+function heroHTML(t, label) {
+  const pct = t.venta > 0 ? Math.round(t.cobrado / t.venta * 100) : 0;
+  return `<section class="hero">
+    <div class="hero-n ${t.dif >= 0 ? 'pos' : 'neg'}">${bigEur(t.dif, true)}</div>
+    <p class="hero-l">${label}</p>
+    <div class="bar" title="Cobrado ${pct}%"><span style="width:${pct}%"></span></div>
+    <dl class="figs">
+      <div><dt>Pagas</dt><dd>${eur(t.coste)}</dd></div>
+      <div><dt>Cobras</dt><dd>${eur(t.venta)}</dd></div>
+      <div><dt>Por cobrar</dt><dd class="${t.pendiente > 0 ? 'owe' : ''}">${eur(t.pendiente)}</dd></div>
+    </dl>
+  </section>`;
 }
 
 function render() {
@@ -288,20 +364,21 @@ function render() {
 
 /* ---- Lista de pedidos ---- */
 function renderPedidos() {
-  header('Pedidos', { label: '+ Nuevo', fn: sheetNuevoPedido });
+  header('Camisetas', { label: 'Nuevo pedido', icon: true, fn: sheetNuevoPedido });
   const g = totalesGlobal();
   const peds = [...S.pedidos].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
-  view.innerHTML = statsHTML(g, g.pendProv > 0 ? `<div class="stat warn" style="grid-column:1/-1"><small>Aún sin pagar al proveedor</small><b>${eur(g.pendProv)}</b></div>` : '')
-    + `<div class="sec">Pedidos</div>`
+  view.innerHTML = heroHTML(g, 'Lo que te queda después de pagar al proveedor')
+    + (g.pendProv > 0 ? `<p class="note">Aún tienes ${eur(g.pendProv)} sin pagar al proveedor.</p>` : '')
+    + `<div class="h2"><h2>Pedidos</h2><span class="aside">${peds.length}</span></div>`
     + (peds.length ? `<div class="list">${peds.map(p => {
       const t = totales(p);
       return `<div class="row" data-act="open" data-id="${p.id}">
         <div class="main"><div class="t">${esc(p.nombre)}</div>
-          <div class="s">${esc(fechaBonita(p.fecha))} · ${p.items.length} prendas${p.pagadoProveedor ? '' : ' · <span style="color:var(--warn)">proveedor sin pagar</span>'}</div></div>
-        <div class="n"><b style="color:${t.dif >= 0 ? 'var(--acc)' : 'var(--bad)'}">${t.dif >= 0 ? '+' : ''}${eur(t.dif)}</b>
-          <small>${t.pendiente > 0 ? 'faltan ' + eur(t.pendiente) : 'todo cobrado'}</small></div>
+          <div class="s">${p.items.length} prendas${p.pagadoProveedor ? '' : ', proveedor sin pagar'}</div></div>
+        <div class="n"><b class="${t.dif >= 0 ? 'pos' : 'neg'}">${t.dif >= 0 ? '+' : ''}${eur(t.dif)}</b>
+          <small class="${t.pendiente > 0 ? 'owe' : ''}">${t.pendiente > 0 ? 'faltan ' + eur(t.pendiente) : 'todo cobrado'}</small></div>
       </div>`;
-    }).join('')}</div>` : `<div class="empty">Aún no hay pedidos.</div>`);
+    }).join('')}</div>` : `<p class="empty">Todavía no hay pedidos. Crea uno con el botón +.</p>`);
 }
 function fechaBonita(f) {
   if (!f) return '';
@@ -314,25 +391,26 @@ function pedidoActual() { return S.pedidos.find(p => p.id === ui.pedidoId); }
 function renderPedido() {
   const p = pedidoActual();
   if (!p) { ui.pedidoId = null; return renderPedidos(); }
-  header(p.nombre, { label: 'Editar', fn: () => sheetPedido(p) }, () => { ui.pedidoId = null; render(); });
-  const t = totales(p);
-  view.innerHTML = statsHTML(t)
+  const back = () => { ui.pedidoId = null; render(); }; back.label = 'Pedidos';
+  header('', { label: 'Editar', fn: () => sheetPedido(p) }, back);
+  const t = totales(p), np = personasPedido(p).size, ex = num(p.extraPersona);
+  view.innerHTML = `<h1 class="page">${esc(p.nombre)}</h1><p class="sub">${p.items.length} prendas${p.nombre.includes(fechaBonita(p.fecha)) ? '' : ', ' + esc(fechaBonita(p.fecha))}</p>`
+    + heroHTML(t, `Lo que te queda de este pedido${ex ? `, con ${eur(ex)} de PayPal por persona (${np})` : ''}`)
     + `<div class="list"><div class="row" data-act="provPagado">
-        <div class="main"><div class="t">Pago al proveedor</div><div class="s">Prendas ${eur(r2(t.coste - num(p.tarifaProc) - num(p.paypal)))} + tarifa ${eur(num(p.tarifaProc))} + PayPal ${eur(num(p.paypal))}</div></div>
-        <span class="chip ${p.pagadoProveedor ? 'ok' : 'no'}">${p.pagadoProveedor ? '✓ Pagado' : 'Sin pagar'}</span></div></div>`
-    + (num(p.extraPersona) ? `<p class="note">Incluye ${eur(num(p.extraPersona))} por persona para la comisión de PayPal (${personasPedido(p).size} persona${personasPedido(p).size === 1 ? '' : 's'} asignada${personasPedido(p).size === 1 ? '' : 's'}).</p>` : '')
-    + `<div class="sec">Prendas (${p.items.length})</div>`
-    + (p.items.length ? `<div class="list">${p.items.map(it => itemRow(it)).join('')}</div>` : `<div class="empty">Sin prendas.</div>`)
-    + `<button class="btn" data-act="addItem">+ Añadir prenda</button>`;
+        <div class="main"><div class="t">Proveedor</div>
+          <div class="s wrap">Prendas ${eur(r2(t.coste - num(p.tarifaProc) - num(p.paypal)))}, tarifa ${eur(num(p.tarifaProc))}, PayPal ${eur(num(p.paypal))}</div></div>
+        <span class="state ${p.pagadoProveedor ? 'ok' : ''}">${p.pagadoProveedor ? 'Pagado' : 'Sin pagar'}</span></div></div>`
+    + `<div class="h2"><h2>Prendas</h2><span class="aside">${p.items.filter(i => i.cobrado).length} de ${p.items.length} cobradas</span></div>`
+    + (p.items.length ? `<div class="list">${p.items.map(it => itemRow(it)).join('')}</div>` : `<p class="empty">Este pedido no tiene prendas. Añade la primera.</p>`)
+    + `<button class="btn" data-act="addItem">Añadir prenda</button>`;
 }
 function itemRow(it, extraSub = '') {
-  const sub = [it.talla, it.dorsal, it.persona || '<i>sin asignar</i>'].filter(Boolean).map(x => x.startsWith('<i>') ? x : esc(x)).join(' · ');
-  const flags = [it.retro && 'retro', it.mangaLarga && 'M/L', it.nino && 'niño', it.manual && 'manual'].filter(Boolean)
-    .map(f => `<span class="tag">${f}</span>`).join('');
-  return `<div class="row" data-act="editItem" data-id="${it.id}">
-    <div class="main"><div class="t">${esc(it.desc || TIPOS[it.tipo])}${flags}</div><div class="s">${extraSub}${sub}</div></div>
+  const sub = [it.talla, it.dorsal, it.persona || 'sin asignar'].filter(Boolean).map(esc).join(', ');
+  const flags = [it.retro && 'retro', it.mangaLarga && 'manga larga', it.nino && 'niño', it.manual && 'manual'].filter(Boolean).join(', ');
+  return `<div class="row has-dot" data-act="editItem" data-id="${it.id}">
+    <button class="dot ${it.cobrado ? 'on' : ''}" data-act="toggleCobrado" data-id="${it.id}" aria-label="${it.cobrado ? 'Cobrada' : 'Marcar como cobrada'}">${ICON_CHECK}</button>
+    <div class="main"><div class="t">${esc(it.desc || TIPOS[it.tipo])}${flags ? `<span class="flag">${flags}</span>` : ''}</div><div class="s">${extraSub}${sub}</div></div>
     <div class="n"><b>${eur(it.precio)}</b><small>coste ${eur(it.coste)}</small></div>
-    <span class="chip ${it.cobrado ? 'ok' : 'no'}" data-act="toggleCobrado" data-id="${it.id}">${it.cobrado ? '✓' : '€?'}</span>
   </div>`;
 }
 function findItem(id) {
@@ -341,15 +419,15 @@ function findItem(id) {
 }
 
 /* ---- Personas ---- */
+const SIN = '\u0000sin';
 function renderPersonas() {
   header('Personas');
   const map = new Map();
   S.pedidos.forEach(p => p.items.forEach(it => {
-    const k = (it.persona || '').trim() || '— Sin asignar';
+    const k = (it.persona || '').trim() || SIN;
     if (!map.has(k)) map.set(k, []);
     map.get(k).push({ p, it });
   }));
-  // extra PayPal por persona y pedido
   const extras = new Map();
   S.pedidos.forEach(p => personasPedido(p).forEach((ok, n) => {
     const e = extras.get(n) || { total: 0, pend: 0 }; const ex = num(p.extraPersona);
@@ -360,72 +438,75 @@ function renderPersonas() {
     const total = r2(xs.reduce((a, x) => a + num(x.it.precio), 0) + e.total);
     const pend = r2(xs.filter(x => !x.it.cobrado).reduce((a, x) => a + num(x.it.precio), 0) + e.pend);
     return { n, xs, total, pend };
-  }).sort((a, b) => b.pend - a.pend || a.n.localeCompare(b.n));
-  if (!arr.length) { view.innerHTML = `<div class="empty">No hay prendas todavía.</div>`; return; }
-  const totalPend = r2(arr.reduce((a, x) => a + x.pend, 0));
-  view.innerHTML = `<div class="stats"><div class="stat warn" style="grid-column:1/-1"><small>Te deben en total</small><b>${eur(totalPend)}</b></div></div>`
-    + arr.map(g => `<div class="sec" style="display:flex;align-items:center;gap:8px"><span style="flex:1">${esc(g.n)} — ${g.pend > 0 ? 'debe ' + eur(g.pend) : 'al día'} <span style="text-transform:none">(total ${eur(g.total)}${extras.has(g.n) ? ', incl. PayPal' : ''})</span></span>
-      ${g.n.startsWith('—') ? '' : `<span class="chip" style="text-transform:none" data-act="cambiarCatPersona" data-n="${esc(g.n)}">${esc(S.tarifas[catDe(g.n)].nombre)} ▾</span>`}</div>
-      <div class="list">${g.xs.map(x => itemRow(x.it, `<span style="color:var(--mut)">${esc(x.p.nombre)}</span> · `)).join('')}</div>
-      ${g.pend > 0 && !g.n.startsWith('—') ? `<button class="btn ghost" data-act="cobrarPersona" data-n="${esc(g.n)}">Marcar todo de ${esc(g.n)} como cobrado</button>` : ''}`
-    ).join('');
+  }).sort((a, b) => (a.n === SIN) - (b.n === SIN) || b.pend - a.pend || a.n.localeCompare(b.n));
+  if (!arr.length) { view.innerHTML = `<p class="empty">Cuando asignes prendas a alguien, aparecerá aquí.</p>`; return; }
+  const totalPend = r2(arr.filter(x => x.n !== SIN).reduce((a, x) => a + x.pend, 0));
+  const deudores = arr.filter(x => x.n !== SIN && x.pend > 0).length;
+  view.innerHTML = `<section class="hero">
+      <div class="hero-n ${totalPend > 0 ? 'owe' : 'pos'}">${bigEur(totalPend)}</div>
+      <p class="hero-l">${totalPend > 0 ? `Te deben entre ${deudores} persona${deudores === 1 ? '' : 's'}` : 'Nadie te debe nada'}</p>
+    </section>`
+    + arr.map(g => {
+      const sin = g.n === SIN;
+      return `<div class="h2"><h2>${sin ? 'Sin asignar' : esc(g.n)}</h2>
+        ${sin ? `<span class="aside">${g.xs.length} prendas</span>` : `<button class="link" style="font-size:14px" data-act="cambiarCatPersona" data-n="${esc(g.n)}">${esc(S.tarifas[catDe(g.n)].nombre)}</button>
+        <span class="state ${g.pend > 0 ? '' : 'ok'}">${g.pend > 0 ? 'debe ' + eur(g.pend) : 'al día'}</span>`}</div>
+      <div class="list">${g.xs.map(x => itemRow(x.it, S.pedidos.length > 1 ? esc(x.p.nombre) + ', ' : '')).join('')}</div>
+      ${!sin && extras.has(g.n) ? `<p class="note">Incluye ${eur(extras.get(g.n).total)} de PayPal.</p>` : ''}
+      ${g.pend > 0 && !sin ? `<button class="btn text" data-act="cobrarPersona" data-n="${esc(g.n)}">Marcar todo como cobrado</button>` : ''}`;
+    }).join('');
 }
 
-/* ---- Tarifa y copias ---- */
+/* ---- Catálogos y copias ---- */
 function renderTarifa() {
   header('Catálogos');
   const cat = ui.cat || 'primo', t = S.tarifas[cat];
   const nPers = Object.values(S.personas).filter(c => c === cat).length;
-  view.innerHTML = `<div class="toggles">${CATS.map(c => `<div class="tog ${c === cat ? 'on' : ''}" data-act="verCat" data-c="${c}">${esc(S.tarifas[c].nombre)}</div>`).join('')}</div>
-    <label class="f"><span>Nombre del catálogo</span><input class="in" data-catnombre value="${esc(t.nombre)}"></label>
-    <div class="sec">Precios (€) · ${nPers} persona${nPers === 1 ? '' : 's'} en este catálogo</div>
-    <div class="list tarifa">${TARIFA_LABELS.map(([k, l]) => `<div class="row"><div class="main"><div class="t" style="font-weight:500">${l}</div></div>
-      <input class="in" inputmode="decimal" data-tarifa="${k}" value="${t[k]}"></div>`).join('')}</div>
-    <p class="note">Camiseta fútbol = base + dorsal + parches + manga larga + retro + niño. Ej.: con dorsal y 1 parche = ${eur(t.camiseta + t.dorsal + t.parche)}.
-    Cambiar precios solo afecta a prendas nuevas o editadas (o pulsa abajo para aplicarlo a todo).</p>
-    <button class="btn ghost" data-act="aplicarCat">Aplicar a las prendas ya apuntadas</button>
-    <button class="btn ghost" data-act="copiarCat">Copiar precios de otro catálogo</button>
+  view.innerHTML = `<div class="seg" style="margin-top:8px">${CATS.map(c => `<button class="${c === cat ? 'on' : ''}" data-act="verCat" data-c="${c}">${esc(S.tarifas[c].nombre)}</button>`).join('')}</div>
+    <label class="f"><span>Nombre</span><input class="in" data-catnombre value="${esc(t.nombre)}"></label>
+    <div class="h2"><h2>Precios</h2><span class="aside">${nPers} persona${nPers === 1 ? '' : 's'}</span></div>
+    <div class="list tarifa">${TARIFA_LABELS.map(([k, l]) => `<div class="row"><div class="main"><div class="t" style="font-weight:450">${l}</div></div>
+      <input class="in" inputmode="decimal" data-tarifa="${k}" value="${t[k]}" aria-label="${l}"></div>`).join('')}</div>
+    <p class="note">Una camiseta suma la base y los extras que lleve. Con dorsal y un parche sale a ${eur(t.camiseta + t.dorsal + t.parche)}. Los cambios se aplican a prendas nuevas o editadas.</p>
+    <button class="btn soft" data-act="aplicarCat">Aplicar a las prendas ya apuntadas</button>
+    <button class="btn text" data-act="copiarCat">Copiar precios de otro catálogo</button>
 
-    <div class="sec">Copia de seguridad</div>
-    <p class="note">Los datos se guardan solo en este móvil. Haz una copia de vez en cuando.</p>
-    <button class="btn ghost" data-act="exportar">Exportar copia (.json)</button>
-    <button class="btn ghost" data-act="importarCopia">Restaurar copia</button>
+    <div class="h2"><h2>Copia de seguridad</h2></div>
+    <p class="note" style="margin-top:0">Los datos solo están en este móvil. Exporta una copia de vez en cuando.</p>
+    <button class="btn soft" data-act="exportar">Exportar copia</button>
+    <button class="btn text" data-act="importarCopia">Restaurar una copia</button>
     <input type="file" id="fileIn" accept="application/json,.json" hidden>
     <button class="btn danger" data-act="borrarTodo">Borrar todos los datos</button>`;
 }
 
 /* ===================== Sheets ===================== */
-function openSheet(html) { $('#sheetBody').innerHTML = `<div class="grab"></div><button class="iconbtn sheet-x" data-act="close">Cerrar</button>` + html; $('#sheet').classList.remove('hidden'); }
+function openSheet(html) { $('#sheetBody').innerHTML = `<div class="grab"></div><button class="link sheet-x" data-act="close">Cerrar</button>` + html; $('#sheet').classList.remove('hidden'); $('#sheetBody').scrollTop = 0; }
 function closeSheet() { $('#sheet').classList.add('hidden'); $('#sheetBody').innerHTML = ''; }
 
+function camposPedido(p) {
+  return `<div class="grid2">
+      <label class="f"><span>Fecha</span><input class="in" type="date" id="pFecha" value="${esc(p.fecha)}"></label>
+      <label class="f"><span>Tarifa del proveedor</span><input class="in" inputmode="decimal" id="pProc" value="${num(p.tarifaProc)}"></label>
+    </div>
+    <div class="grid2">
+      <label class="f"><span>Comisión PayPal</span><input class="in" inputmode="decimal" id="pPaypal" value="${num(p.paypal)}"></label>
+      <label class="f"><span>PayPal por persona</span><input class="in" inputmode="decimal" id="pExtra" value="${num(p.extraPersona)}"></label>
+    </div>`;
+}
 function sheetNuevoPedido() {
   openSheet(`<h2>Nuevo pedido</h2>
     <label class="f"><span>Nombre</span><input class="in" id="pNombre" value="Pedido ${esc(fechaBonita(hoy()))}"></label>
-    <div class="grid2">
-      <label class="f"><span>Fecha</span><input class="in" type="date" id="pFecha" value="${hoy()}"></label>
-      <label class="f"><span>Tarifa procesamiento</span><input class="in" inputmode="decimal" id="pProc" value="3"></label>
-    </div>
-    <div class="grid2">
-      <label class="f"><span>Comisión PayPal (pagas)</span><input class="in" inputmode="decimal" id="pPaypal" value="${DEF_PAYPAL}"></label>
-      <label class="f"><span>Extra PayPal por persona (cobras)</span><input class="in" inputmode="decimal" id="pExtra" value="${DEF_EXTRA}"></label>
-    </div>
+    ${camposPedido({ fecha: hoy(), tarifaProc: 3, paypal: DEF_PAYPAL, extraPersona: DEF_EXTRA })}
     <button class="btn" data-act="crearPedido">Crear pedido vacío</button>
-    <div class="sec">o pegar el pedido que te pase Claude</div>
+    <div class="h2"><h2>Desde Claude</h2></div>
+    <p class="note" style="margin-top:0">Pega aquí el texto del pedido que te pase Claude a partir de la foto del proveedor.</p>
     <textarea class="in" id="pJson" placeholder='{"nombre": "...", "items": [...]}'></textarea>
-    <button class="btn ghost" data-act="importarPedido">Importar pedido</button>`);
+    <button class="btn soft" data-act="importarPedido">Importar pedido</button>`);
 }
-
 function sheetPedido(p) {
   openSheet(`<h2>Editar pedido</h2>
     <label class="f"><span>Nombre</span><input class="in" id="pNombre" value="${esc(p.nombre)}"></label>
-    <div class="grid2">
-      <label class="f"><span>Fecha</span><input class="in" type="date" id="pFecha" value="${esc(p.fecha)}"></label>
-      <label class="f"><span>Tarifa procesamiento</span><input class="in" inputmode="decimal" id="pProc" value="${num(p.tarifaProc)}"></label>
-    </div>
-    <div class="grid2">
-      <label class="f"><span>Comisión PayPal (pagas)</span><input class="in" inputmode="decimal" id="pPaypal" value="${num(p.paypal)}"></label>
-      <label class="f"><span>Extra PayPal por persona (cobras)</span><input class="in" inputmode="decimal" id="pExtra" value="${num(p.extraPersona)}"></label>
-    </div>
+    ${camposPedido(p)}
     <button class="btn" data-act="guardarPedido">Guardar</button>
     <button class="btn danger" data-act="borrarPedido">Borrar pedido</button>`);
 }
@@ -434,49 +515,49 @@ let draft = null; // prenda en edición
 function sheetItem(it, isNew) {
   draft = { ...it, _new: isNew, _cat: catDe(it.persona) };
   const personas = [...new Set(S.pedidos.flatMap(p => p.items.map(i => (i.persona || '').trim())).filter(Boolean))].sort();
-  openSheet(`<h2>${isNew ? 'Nueva prenda' : 'Editar prenda'}</h2>
-    <label class="f"><span>Descripción</span><input class="in" data-f="desc" value="${esc(it.desc)}" placeholder="Ej.: Real Madrid 1ª"></label>
+  openSheet(`<h2>${isNew ? 'Nueva prenda' : esc(it.desc || 'Prenda')}</h2>
+    <label class="f"><span>Descripción</span><input class="in" data-f="desc" value="${esc(it.desc)}" placeholder="Real Madrid 1ª equipación"></label>
     <label class="f"><span>Para</span><input class="in" data-f="persona" list="dlPersonas" value="${esc(it.persona)}" placeholder="Nombre"></label>
     <div id="catSel"></div>
     <datalist id="dlPersonas">${personas.map(n => `<option value="${esc(n)}">`).join('')}</datalist>
     <div class="grid2">
       <label class="f"><span>Talla</span><input class="in" data-f="talla" value="${esc(it.talla)}"></label>
-      <label class="f"><span>Dorsal / nombre</span><input class="in" data-f="dorsal" value="${esc(it.dorsal)}" placeholder="Ej.: Vini 7"></label>
+      <label class="f"><span>Dorsal</span><input class="in" data-f="dorsal" value="${esc(it.dorsal)}" placeholder="Vini 7"></label>
     </div>
     <label class="f"><span>Tipo</span><select class="in" data-f="tipo">${Object.entries(TIPOS).map(([k, v]) => `<option value="${k}" ${k === it.tipo ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
     <div id="opcCamiseta"></div>
-    <label class="f"><span>Coste proveedor (precio de la foto)</span><input class="in" inputmode="decimal" data-f="coste" value="${it.coste || ''}"></label>
+    <label class="f"><span>Precio del proveedor</span><input class="in" inputmode="decimal" data-f="coste" value="${it.coste || ''}"></label>
     <div id="precioBox"></div>
-    <div class="toggles"><div class="tog ${it.cobrado ? 'on' : ''}" data-tog="cobrado">✓ Ya me lo ha pagado</div></div>
+    <div class="toggles"><button class="tog ${it.cobrado ? 'on' : ''}" data-tog="cobrado">Ya me lo ha pagado</button></div>
     <button class="btn" data-act="guardarItem">Guardar</button>
     ${isNew ? '' : `<button class="btn danger" data-act="borrarItem">Borrar prenda</button>`}`);
   paintItemDyn();
 }
 function paintItemDyn() {
   const d = draft, t = tarifaDe(d);
-  $('#catSel').innerHTML = `<div class="toggles" style="margin-top:-2px">${CATS.map(c => `<div class="tog ${c === d._cat ? 'on' : ''}" data-act="setCat" data-c="${c}">${esc(S.tarifas[c].nombre)}</div>`).join('')}</div>`;
+  $('#catSel').innerHTML = `<div class="seg" style="margin-top:-4px">${CATS.map(c => `<button class="${c === d._cat ? 'on' : ''}" data-act="setCat" data-c="${c}">${esc(S.tarifas[c].nombre)}</button>`).join('')}</div>`;
   $('#opcCamiseta').innerHTML = d.tipo === 'camiseta' ? `
     <div class="toggles">
-      <div class="tog ${d.conDorsal ? 'on' : ''}" data-tog="conDorsal">Dorsal +${t.dorsal}</div>
-      <div class="tog ${d.mangaLarga ? 'on' : ''}" data-tog="mangaLarga">Manga larga +${t.mangaLarga}</div>
-      <div class="tog ${d.retro ? 'on' : ''}" data-tog="retro">Retro +${t.retro}</div>
-      <div class="tog ${d.nino ? 'on' : ''}" data-tog="nino">Niño +${t.nino}</div>
+      <button class="tog ${d.conDorsal ? 'on' : ''}" data-tog="conDorsal">Dorsal +${t.dorsal}</button>
+      <button class="tog ${d.mangaLarga ? 'on' : ''}" data-tog="mangaLarga">Manga larga +${t.mangaLarga}</button>
+      <button class="tog ${d.retro ? 'on' : ''}" data-tog="retro">Retro +${t.retro}</button>
+      <button class="tog ${d.nino ? 'on' : ''}" data-tog="nino">Niño +${t.nino}</button>
     </div>
-    <label class="f"><span>Parches (+${t.parche} c/u)</span><div class="stepper">
-      <button data-act="parche" data-d="-1">−</button><b>${d.parches || 0}</b><button data-act="parche" data-d="1">+</button></div></label>` : '';
+    <label class="f"><span>Parches, +${t.parche} cada uno</span><div class="stepper">
+      <button data-act="parche" data-d="-1" aria-label="Quitar parche">−</button><b>${d.parches || 0}</b><button data-act="parche" data-d="1" aria-label="Añadir parche">+</button></div></label>` : '';
   const pt = precioTarifa(d);
   const precio = d.manual ? num(d.precio) : pt;
   const dif = r2(precio - num(d.coste));
-  $('#precioBox').innerHTML = `<div class="pricebox">
-      <small style="color:var(--mut)">Precio · ${esc(t.nombre)}</small>
-      <div class="big">${eur(precio)}</div>
-      <div class="det">${d.manual ? 'Precio manual (tarifa: ' + eur(pt) + ')' : esc(desglose(d))} · diferencia ${dif >= 0 ? '+' : ''}${eur(dif)}</div>
+  $('#precioBox').innerHTML = `<div class="price">
+      <label class="f" style="margin:0"><span>Precio para ${esc((d.persona || '').trim() || 'esta persona')}</span></label>
+      <div class="big">${bigEur(precio)}</div>
+      <div class="det">${d.manual ? 'Precio manual, tarifa ' + eur(pt) : esc(desglose(d))}. Te quedan <b style="color:${dif >= 0 ? 'var(--pos)' : 'var(--neg)'}">${dif >= 0 ? '+' : ''}${eur(dif)}</b></div>
     </div>
     <div class="toggles">
-      <div class="tog ${d.manual ? 'on' : ''}" data-tog="manual">Precio manual</div>
-      <div class="tog" data-act="aCoste">A precio de coste</div>
+      <button class="tog ${d.manual ? 'on' : ''}" data-tog="manual">Precio manual</button>
+      <button class="tog" data-act="aCoste">A precio de coste</button>
     </div>
-    ${d.manual ? `<label class="f"><span>Precio manual (€)</span><input class="in" inputmode="decimal" data-f="precio" value="${num(d.precio)}"></label>` : ''}`;
+    ${d.manual ? `<label class="f"><span>Precio manual</span><input class="in" inputmode="decimal" data-f="precio" value="${num(d.precio)}"></label>` : ''}`;
 }
 
 /* ===================== Eventos ===================== */
@@ -493,7 +574,8 @@ document.addEventListener('input', e => {
     draft[f] = el.value;
     if (f === 'persona') {
       const n = el.value.trim();
-      if (S.personas[n]) { draft._cat = S.personas[n]; paintItemDyn(); }
+      if (S.personas[n]) draft._cat = S.personas[n];
+      paintItemDyn();
     } else if (f === 'dorsal' && draft.tipo === 'camiseta') {
       const had = draft.conDorsal; draft.conDorsal = el.value.trim() !== '';
       if (had !== draft.conDorsal) paintItemDyn();
@@ -514,9 +596,9 @@ function paintPriceOnly() {
   const focused = document.activeElement && document.activeElement.dataset.f === 'precio';
   if (focused) {
     const pt = precioTarifa(draft), precio = num(draft.precio), dif = r2(precio - num(draft.coste));
-    const box = $('#precioBox .pricebox');
-    box.querySelector('.big').textContent = eur(precio);
-    box.querySelector('.det').textContent = `Precio manual (tarifa: ${eur(pt)}) · diferencia ${dif >= 0 ? '+' : ''}${eur(dif)}`;
+    const box = $('#precioBox .price');
+    box.querySelector('.big').innerHTML = bigEur(precio);
+    box.querySelector('.det').innerHTML = `Precio manual, tarifa ${eur(pt)}. Te quedan <b style="color:${dif >= 0 ? 'var(--pos)' : 'var(--neg)'}">${dif >= 0 ? '+' : ''}${eur(dif)}</b>`;
   } else paintItemDyn();
 }
 
@@ -609,8 +691,8 @@ const ACTIONS = {
   copiarCat: () => {
     const cat = ui.cat || 'primo';
     openSheet(`<h2>Copiar precios a ${esc(S.tarifas[cat].nombre)}</h2>
-      ${CATS.filter(c => c !== cat).map(c => `<button class="btn ghost" data-act="copiarDe" data-c="${c}">Desde ${esc(S.tarifas[c].nombre)}</button>`).join('')}
-      <button class="btn ghost" data-act="copiarDe" data-c="__def">Precios por defecto de este catálogo</button>`);
+      ${CATS.filter(c => c !== cat).map(c => `<button class="btn soft" data-act="copiarDe" data-c="${c}">Desde ${esc(S.tarifas[c].nombre)}</button>`).join('')}
+      <button class="btn soft" data-act="copiarDe" data-c="__def">Precios por defecto de este catálogo</button>`);
   },
   copiarDe: a => {
     const cat = ui.cat || 'primo', src = a.dataset.c === '__def' ? tarifaCat(cat) : S.tarifas[a.dataset.c];
@@ -620,7 +702,7 @@ const ACTIONS = {
   cambiarCatPersona: a => {
     const n = a.dataset.n;
     openSheet(`<h2>Catálogo de ${esc(n)}</h2>
-      ${CATS.map(c => `<button class="btn ${catDe(n) === c ? '' : 'ghost'}" data-act="fijarCatPersona" data-n="${esc(n)}" data-c="${c}">${esc(S.tarifas[c].nombre)}</button>`).join('')}
+      ${CATS.map(c => `<button class="btn ${catDe(n) === c ? '' : 'soft'}" data-act="fijarCatPersona" data-n="${esc(n)}" data-c="${c}">${esc(S.tarifas[c].nombre)}</button>`).join('')}
       <p class="note">Se recalculan sus prendas (menos las de precio manual).</p>`);
   },
   fijarCatPersona: a => {
